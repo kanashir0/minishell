@@ -6,8 +6,11 @@ NC = \033[0m
 
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -g3
+LDFLAGS = -lreadline -lncurses
 
-INC_DIR = include/
+
+LIB_DIR = lib/libft/
+INC_DIR = -I include/ -I $(LIB_DIR)
 OBJ_DIR = objs/
 SRC_DIR = src/
 BUI_DIR = src/builtins/
@@ -32,23 +35,28 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
 OBJS_DIRS = $(sort $(dir $(OBJS)))
 
-all: $(OBJS_DIRS) $(NAME)
+all: libft $(OBJS_DIRS) $(NAME)
 
 $(OBJS_DIRS):
 	@mkdir -p $@
 
 $(OBJS_DIRS)%.o: $(SRC_DIR)%.c | $(OBJS_DIRS)
 	@printf "$(GREEN)[Compiling]$(NC) %s...$(NC)\n" "$(notdir $(<))"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INC_DIR) -c $< -o $@
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) -no-pie $(OBJS) -o $(NAME)
+	@$(CC) $(CFLAGS) -no-pie $(OBJS) -L$(LIB_DIR) -lft $(LDFLAGS) -o $(NAME)
+
+libft:
+	@make -C $(LIB_DIR)
 
 clean:
 	@rm -rf $(OBJ_DIR)
+	@make -C $(LIB_DIR) fclean
 
 fclean: clean
 	@printf "$(RED)[Cleaning]$(NC)\n" "$(notdir $(<))"
+	@make -C $(LIB_DIR) fclean
 	@rm -f $(NAME)
 
 re: fclean all
