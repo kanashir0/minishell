@@ -21,6 +21,7 @@ RED_DIR = src/redirect/
 SIG_DIR = src/signals/
 TOK_DIR = src/tokenizer/
 UTL_DIR = src/utils/
+INP_DIR = src/input/
 
 SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(BUI_DIR), ) \
@@ -28,19 +29,24 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(EXP_DIR), ) \
 		$(addprefix $(PAR_DIR), ) \
 		$(addprefix $(RED_DIR), ) \
-		$(addprefix $(SIG_DIR), ) \
+		$(addprefix $(SIG_DIR), signals.c) \
 		$(addprefix $(TOK_DIR), ) \
-		$(addprefix $(UTL_DIR), )
+		$(addprefix $(UTL_DIR), memory.c) \
+		$(addprefix $(INP_DIR), input.c)
 
-OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
-OBJS_DIRS = $(sort $(dir $(OBJS)))
+OBJS = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
+
+# OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
+# OBJS_DIRS = $(sort $(dir $(OBJS)))
 
 all: libft $(OBJS_DIRS) $(NAME)
 
-$(OBJS_DIRS):
-	@mkdir -p $@
+# $(OBJ_DIR):
+# 	@mkdir -p $@
 
-$(OBJS_DIRS)%.o: $(SRC_DIR)%.c | $(OBJS_DIRS)
+# $(OBJ_DIR)%.o: $(SRC_DIR)%.c | $(OBJS_DIRS)
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(dir $@)
 	@printf "$(GREEN)[Compiling]$(NC) %s...$(NC)\n" "$(notdir $(<))"
 	@$(CC) $(CFLAGS) $(INC_DIR) -c $< -o $@
 

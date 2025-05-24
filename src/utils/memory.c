@@ -1,42 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/24 13:59:47 by gyasuhir         ###   ########.fr       */
+/*   Created: 2025/05/24 11:57:12 by gyasuhir          #+#    #+#             */
+/*   Updated: 2025/05/24 12:54:22 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-void	tokenizer(t_command *cmd)
+void	*ft_malloc(size_t size)
 {
-	cmd->args = ft_split(cmd->input, ' ');
-	return ;
+	void	*ptr;
+
+	if (size <= 0)
+		return (malloc(0));
+	ptr = malloc(size);
+	if (ptr == NULL)
+		return (NULL);
+	ft_memset(ptr, 0, size);
+	return (ptr);
 }
 
-void	execute(char **tokens)
+void	free_command(t_command *cmd)
 {
-	printf("%s\n", tokens[1]);
-}
+	size_t	args_size;
 
-int	main(void)
-{
-	t_command	*cmd;
-
-	cmd = ft_malloc(sizeof(t_command));
-	setup_signals(cmd);
-	while (42)
-	{
-		read_input(cmd);
-		if (!cmd->input)
-			break ;
-		tokenizer(cmd);
-		execute(cmd->args);
-	}
-	free_command(cmd);
-	return (0);
+	args_size = 0;
+	free(cmd->input);
+	while (cmd->args[args_size])
+		free(cmd->args[args_size++]);
+	free(cmd->args);
+	free(cmd);
 }
