@@ -1,42 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/24 13:59:47 by gyasuhir         ###   ########.fr       */
+/*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
+/*   Updated: 2025/05/24 12:37:02 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-void	tokenizer(t_command *cmd)
+void	read_input(t_command *cmd)
 {
-	cmd->args = ft_split(cmd->input, ' ');
+	cmd->input = readline("minishell> ");
 	return ;
-}
-
-void	execute(char **tokens)
-{
-	printf("%s\n", tokens[1]);
-}
-
-int	main(void)
-{
-	t_command	*cmd;
-
-	cmd = ft_malloc(sizeof(t_command));
-	setup_signals(cmd);
-	while (42)
-	{
-		read_input(cmd);
-		if (!cmd->input)
-			break ;
-		tokenizer(cmd);
-		execute(cmd->args);
-	}
-	free_command(cmd);
-	return (0);
 }
