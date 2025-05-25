@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 15:31:57 by cbrito-s          #+#    #+#             */
-/*   Updated: 2024/10/23 11:32:09 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/05/25 15:40:56 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (ft_strdup(""));
 	if (size - start < len)
 		len = size - start;
-	sub = (char *)malloc((len + 1) * sizeof(char));
+	sub = ft_collect_mem(sizeof(char), len + 1);
 	if (!sub)
 		return (NULL);
 	ft_memmove(sub, s + start, len);

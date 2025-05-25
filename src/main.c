@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 15:16:22 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/05/25 15:58:10 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	main(void)
 {
 	t_command	*cmd;
 
-	cmd = ft_malloc(sizeof(t_command));
+	cmd = ft_collect_mem(1, sizeof(t_command));
 	setup_signals(cmd);
 	while (42)
 	{
@@ -32,6 +32,6 @@ int	main(void)
 		tokenizer(cmd);
 		execute(cmd);
 	}
-	free_command(cmd);
+	ft_clear_men();
 	return (0);
 }

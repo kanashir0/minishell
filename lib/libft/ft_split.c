@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 11:12:55 by cbrito-s          #+#    #+#             */
-/*   Updated: 2024/10/30 12:18:03 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/05/25 15:45:54 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ static void	free_arr(char **arr, size_t size)
 	i = 0;
 	while (i < size)
 	{
-		free(arr[i]);
+		untrack_pointer(arr[i]);
 		i++;
 	}
-	free(arr);
+	untrack_pointer(arr);
 }
 
 static size_t	word_len(char const *s, char c)
@@ -42,7 +42,7 @@ static char	*get_word(char const *s, char c)
 	size_t	i;
 
 	len = word_len(s, c);
-	str = (char *)malloc((len + 1) * sizeof(char));
+	str = ft_collect_mem(1, len + 1);
 	if (!str)
 		return (NULL);
 	i = 0;
@@ -82,7 +82,7 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	arr = (char **)malloc((word_count(s, c) + 1) * sizeof(char *));
+	arr = ft_collect_mem(sizeof(char *), word_count(s, c) + 1);
 	if (!arr)
 		return (NULL);
 	i = 0;
