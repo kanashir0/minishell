@@ -24,8 +24,8 @@ UTL_DIR = src/utils/
 INP_DIR = src/input/
 
 SRC =	$(addprefix $(SRC_DIR), main.c) \
-		$(addprefix $(BUI_DIR), ) \
-		$(addprefix $(EXE_DIR), ) \
+		$(addprefix $(BUI_DIR), echo.c) \
+		$(addprefix $(EXE_DIR), execute.c) \
 		$(addprefix $(EXP_DIR), ) \
 		$(addprefix $(PAR_DIR), ) \
 		$(addprefix $(RED_DIR), ) \

@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 14:14:36 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/05/25 15:21:56 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,11 @@ void	read_input(t_command *cmd);
 
 // Signals
 void	setup_signals(t_command *cmd);
+
+// Built-ins
+int		echo(char **args);
+
+// Executor
+void	execute(t_command *cmd);
 
 #endif

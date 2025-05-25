@@ -1,37 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 15:16:22 by gyasuhir         ###   ########.fr       */
+/*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
+/*   Updated: 2025/05/25 15:27:01 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h" 
 
-void	tokenizer(t_command *cmd)
+int	is_builtin(t_command *cmd)
 {
-	cmd->args = ft_split(cmd->input, ' ');
-	return ;
+	if (!ft_strncmp(cmd->args[0], "echo", 4) && ft_strlen(cmd->args[0]) == 4)
+		return (echo(cmd->args));
+	return (-1);
 }
 
-int	main(void)
+void	execute(t_command *cmd)
 {
-	t_command	*cmd;
+	int	res;
 
-	cmd = ft_malloc(sizeof(t_command));
-	setup_signals(cmd);
-	while (42)
-	{
-		read_input(cmd);
-		if (!cmd->input)
-			break ;
-		tokenizer(cmd);
-		execute(cmd);
-	}
-	free_command(cmd);
-	return (0);
+	res = is_builtin(cmd);
+	if (res == -1)
+		printf("executar pelo $PATH");
+	return ;
 }
