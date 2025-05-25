@@ -6,13 +6,13 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:22:44 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/05/24 14:00:38 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/05/25 14:34:18 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-t_command	*get_cmd_context(t_command *cmd)
+static t_command	*get_cmd_context(t_command *cmd)
 {
 	static t_command	*context;
 
@@ -23,8 +23,9 @@ t_command	*get_cmd_context(t_command *cmd)
 
 void	signal_handler(int signum, siginfo_t *info, void *context)
 {
-	t_command	*cmd = get_cmd_context(NULL);
-
+	t_command	*cmd;
+	
+	cmd = get_cmd_context(NULL);
 	(void)context;
 	(void)info;
 	if (signum == SIGINT)

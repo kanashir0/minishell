@@ -36,15 +36,8 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 
 OBJS = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 
-# OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
-# OBJS_DIRS = $(sort $(dir $(OBJS)))
+all: libft $(NAME)
 
-all: libft $(OBJS_DIRS) $(NAME)
-
-# $(OBJ_DIR):
-# 	@mkdir -p $@
-
-# $(OBJ_DIR)%.o: $(SRC_DIR)%.c | $(OBJS_DIRS)
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@mkdir -p $(dir $@)
 	@printf "$(GREEN)[Compiling]$(NC) %s...$(NC)\n" "$(notdir $(<))"
@@ -54,15 +47,15 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) -no-pie $(OBJS) -L$(LIB_DIR) -lft $(LDFLAGS) -o $(NAME)
 
 libft:
-	@make -C $(LIB_DIR)
+	@make -C $(LIB_DIR) --no-print-directory
 
 clean:
 	@rm -rf $(OBJ_DIR)
-	@make -C $(LIB_DIR) fclean
+	@make -C $(LIB_DIR) fclean --no-print-directory
 
 fclean: clean
 	@printf "$(RED)[Cleaning]$(NC)\n" "$(notdir $(<))"
-	@make -C $(LIB_DIR) fclean
+	@make -C $(LIB_DIR) fclean --no-print-directory
 	@rm -f $(NAME)
 
 re: fclean all
