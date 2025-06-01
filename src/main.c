@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 16:31:38 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/01 17:10:33 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	main(void)
 {
 	t_command	*cmd;
 
-	cmd = ft_collect_mem(1, sizeof(t_command));
-	setup_signals(cmd);
+	cmd = init_command();
+	setup_signals();
 	while (42)
 	{
 		read_input(cmd);
