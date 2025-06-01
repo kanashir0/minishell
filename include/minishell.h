@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 15:59:22 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/05/30 17:33:05 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,26 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+# define SUCCESS 0
+# define FAILURE 1
+# define SYNTAX_ERROR 2
+
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*prev;
+	struct s_env	*next;
+}	t_env;
+
 typedef struct s_command
 {
 	char	*input;
 	char	*command;
 	char	**args;
 	int		signal;
+	int		status;
+	t_env	*env_list;
 }			t_command;
 
 // Input data
@@ -40,7 +54,20 @@ void	setup_signals(t_command *cmd);
 // Built-ins
 int		echo(char **args);
 
+int		pwd(t_command *cmd);
+int		cd(char **args, t_command *cmd);
+int		export(char **args, t_command *cmd);
+int		unset(char **args, t_command *cmd);
+int		env(char **args, t_command *cmd);
+int		builtin_exit(char **args, t_command *cmd);
+
 // Executor
 void	execute(t_command *cmd);
+
+// clean
+void	free_matrix(char **matrix);
+
+// environ
+void	init_env(t_command *cmd, char **envp);
 
 #endif

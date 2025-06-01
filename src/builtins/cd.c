@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/22 15:31:57 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/29 18:56:47 by cbrito-s         ###   ########.fr       */
+/*   Created: 2025/05/30 17:32:07 by cbrito-s          #+#    #+#             */
+/*   Updated: 2025/05/30 17:49:51 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../include/minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+int	cd(char **args, t_command *cmd)
 {
-	size_t	size;
-	char	*sub;
+	int	path_cd;
+	int	flag;
 
-	size = ft_strlen(s);
-	if (start >= size)
-		return (ft_strdup(""));
-	if (size - start < len)
-		len = size - start;
-	sub = ft_collect_mem(sizeof(char), len + 1);
-	if (!sub)
-		return (NULL);
-	ft_memmove(sub, s + start, len);
-	sub[len] = '\0';
-	return (sub);
+	(void)flag;
+	(void)cmd;
+	if (!args[1] || ft_strncmp(args[1], "~", 1))
+		path_cd = chdir(getenv("HOME"));
+	return (path_cd);
 }

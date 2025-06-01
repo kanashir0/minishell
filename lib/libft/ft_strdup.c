@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 11:31:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2024/10/24 18:38:04 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:56:44 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strdup(const char *s)
 	char	*str;
 
 	len = ft_strlen(s);
-	str = (char *)malloc((len + 1) * sizeof(char));
+	str = (char *)ft_collect_mem(sizeof(char), len + 1);
 	if (!str)
 		return (NULL);
 	i = 0;
