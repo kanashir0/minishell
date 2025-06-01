@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:16:55 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 15:49:40 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:01:34 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,6 @@ void		ft_lstclear(t_list **lst, void (*del)(void *));
 
 void		*ft_collect_mem(size_t nmemb, size_t size);
 void		untrack_pointer(void *content);
-void		ft_clear_men(void);
+void		ft_clear_mem(void);
 
 #endif

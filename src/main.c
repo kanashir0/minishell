@@ -6,17 +6,11 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 17:10:33 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:01:52 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-void	tokenizer(t_command *cmd)
-{
-	cmd->args = ft_split(cmd->input, ' ');
-	return ;
-}
 
 int	main(void)
 {
@@ -27,11 +21,12 @@ int	main(void)
 	while (42)
 	{
 		read_input(cmd);
-		if (!cmd->input)
-			break ;
-		tokenizer(cmd);
-		execute(cmd);
+		if (!is_empty_input(cmd->input))
+		{
+			tokenizer(cmd);
+			execute(cmd);
+		}
 	}
-	ft_clear_men();
+	ft_clear_mem();
 	return (0);
 }

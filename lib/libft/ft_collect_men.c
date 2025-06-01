@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_collect_men.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 16:26:06 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 15:52:17 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:01:17 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	untrack_pointer(void *content)
 	}
 }
 
-void	ft_clear_men(void)
+void	ft_clear_mem(void)
 {
 	ft_lstclear(get_mem_pointer(), &free);
 }

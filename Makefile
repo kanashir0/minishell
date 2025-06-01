@@ -30,8 +30,8 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(PAR_DIR), ) \
 		$(addprefix $(RED_DIR), ) \
 		$(addprefix $(SIG_DIR), setup.c handlers.c) \
-		$(addprefix $(TOK_DIR), ) \
-		$(addprefix $(UTL_DIR), init.c) \
+		$(addprefix $(TOK_DIR), tokenizer.c) \
+		$(addprefix $(UTL_DIR), init.c error.c) \
 		$(addprefix $(INP_DIR), input.c)
 
 OBJS = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
