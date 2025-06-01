@@ -8,6 +8,7 @@ CC = cc
 FLAGS = -Wall -Werror -Wextra
 
 SRCS =	ft_atoi.c \
+		ft_atol.c \
 		ft_bzero.c \
 		ft_calloc.c \
 		ft_isalnum.c \
@@ -42,7 +43,7 @@ SRCS =	ft_atoi.c \
 		ft_tolower.c \
 		ft_toupper.c \
 		get_next_line.c \
-		ft_collect_men.c \
+		ft_collect_mem.c \
 		ft_lstadd_front.c \
 		ft_lstclear.c \
 		ft_lstdelone.c \

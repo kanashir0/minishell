@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 17:47:25 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/01 19:45:08 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,26 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+# define SUCCESS 0
+# define FAILURE 1
+# define SYNTAX_ERROR 2
+
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*prev;
+	struct s_env	*next;
+}	t_env;
+
 typedef struct s_command
 {
 	char	*input;
 	char	*command;
 	char	**args;
 	int		signal;
+	int		status;
+	t_env	*env_list;
 }			t_command;
 
 // Input data
@@ -41,6 +55,12 @@ void	sigint_handler(int signum);
 
 // Built-ins
 int		echo(char **args);
+int		pwd(t_command *cmd);
+int		cd(char **args, t_command *cmd);
+int		export(char **args, t_command *cmd);
+int		unset(char **args, t_command *cmd);
+int		env(char **args, t_command *cmd);
+int		builtin_exit(char **args, t_command *cmd);
 
 // Executor
 void	execute(t_command *cmd);
@@ -48,6 +68,7 @@ void	execute(t_command *cmd);
 // Utils
 t_command	*get_cmd_context(t_command *cmd);
 t_command	*init_command(void);
+void		init_env(t_command *cmd, char **envp);
 
 // Tokenizer
 void	tokenizer(t_command *cmd);

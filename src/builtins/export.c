@@ -1,31 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/22 15:31:57 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/29 18:56:47 by cbrito-s         ###   ########.fr       */
+/*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
+/*   Updated: 2025/05/30 16:14:59 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../include/minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+
+int	export(char **args, t_command *cmd)
 {
-	size_t	size;
-	char	*sub;
+	t_env	*node;
 
-	size = ft_strlen(s);
-	if (start >= size)
-		return (ft_strdup(""));
-	if (size - start < len)
-		len = size - start;
-	sub = ft_collect_mem(sizeof(char), len + 1);
-	if (!sub)
-		return (NULL);
-	ft_memmove(sub, s + start, len);
-	sub[len] = '\0';
-	return (sub);
+	node = cmd->env_list;
+	if (!args[1])
+	{
+		printf("declare -x %s", node->key);
+		if (node->value)
+			printf("=\"%s\"", node->value);
+		printf("\n");
+	}
+	return (0);
 }
