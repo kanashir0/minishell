@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:16:55 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 15:49:40 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:56:57 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ char		*ft_strjoin(char const *s1, char const *s2);
 char		*ft_strtrim(char const *s1, char const *set);
 char		**ft_split(char const *s, char c);
 char		*ft_itoa(int n);
+long		ft_atol(const char *str);
 char		*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void		ft_striteri(char *s, void (*f)(unsigned int, char *));
 void		ft_putchar_fd(char c, int fd);
@@ -72,6 +73,6 @@ void		ft_lstclear(t_list **lst, void (*del)(void *));
 
 void		*ft_collect_mem(size_t nmemb, size_t size);
 void		untrack_pointer(void *content);
-void		ft_clear_men(void);
+void		ft_clear_mem(void);
 
 #endif
