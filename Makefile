@@ -29,7 +29,7 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(EXP_DIR), ) \
 		$(addprefix $(PAR_DIR), ) \
 		$(addprefix $(RED_DIR), ) \
-		$(addprefix $(SIG_DIR), signals.c) \
+		$(addprefix $(SIG_DIR), setup.c handlers.c) \
 		$(addprefix $(TOK_DIR), ) \
 		$(addprefix $(UTL_DIR), ) \
 		$(addprefix $(INP_DIR), input.c)
