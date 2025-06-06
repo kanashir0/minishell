@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 19:45:08 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/05 21:07:27 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,23 @@
 # define FAILURE 1
 # define SYNTAX_ERROR 2
 
+typedef enum e_token_type
+{
+	WORD,
+	REDIR_IN,
+	REDIR_OUT,
+	HEREDOC,
+	APPEND,
+	PIPE
+}	t_token_type;
+
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+}					t_token;
+
 typedef struct s_env
 {
 	char			*key;
@@ -43,11 +60,13 @@ typedef struct s_command
 	int		signal;
 	int		status;
 	t_env	*env_list;
+	t_token	**tokens;
 }			t_command;
 
 // Input data
 void	read_input(t_command *cmd);
 int		is_empty_input(char *input);
+int		ft_isspace(int c);
 
 // Signals
 void	setup_signals(void);

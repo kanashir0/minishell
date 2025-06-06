@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 19:47:14 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/05 20:56:33 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	main(int ac, char **av, char **envp)
 		read_input(cmd);
 		if (!is_empty_input(cmd->input))
 		{
-			tokenizer(cmd);
+			cmd->tokens = tokenizer(cmd->input);
 			execute(cmd);
 		}
 	}

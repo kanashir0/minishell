@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/01 17:46:24 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/05 20:48:41 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	read_input(t_command *cmd)
 {
+	// TODO: fazer o free do input
 	cmd->input = readline("minishell> ");
 	// TODO validação input
 	return ;
