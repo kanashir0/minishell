@@ -6,24 +6,108 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/30 16:14:59 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/12 18:16:07 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
+static t_env	*get_env(t_env *env_list, char *key)
+{
+	t_env	*node;
+	int		len;
 
-int	export(char **args, t_command *cmd)
+	len = ft_strlen(key) + 1;
+	node = env_list;
+	while (node)
+	{
+		if (ft_strncmp(node->key, key, len) == 0)
+			return (node);
+		node = node->next;
+	}
+	return (NULL);
+}
+
+static int	is_valid_key(char *str)
+{
+	if (!*str || !(ft_isalpha(*str) || *str == '_'))
+		return (0);
+	str++;
+	while (*str)
+	{
+		if (!(ft_isalnum(*str) || *str == '_'))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+static int	print_export_list(t_env *env_list)
 {
 	t_env	*node;
 
-	node = cmd->env_list;
-	if (!args[1])
+	node = env_list;
+	while (node)
 	{
 		printf("declare -x %s", node->key);
 		if (node->value)
 			printf("=\"%s\"", node->value);
 		printf("\n");
+		node = node->next;
 	}
-	return (0);
+	return (SUCCESS);
+}
+
+static t_env	*new_env(char **key)
+{
+	t_env	*node;
+
+	node = ft_collect_mem(1, sizeof(t_env));
+	node->key = ft_strdup(key[0]);
+	node->value = ft_strdup(key[1]);
+	node->prev = NULL;
+	node->next = NULL;
+	return (node);
+}
+
+static void export_arg(t_command *cmd, char *arg)
+{
+	t_env	*node;
+	char	**key;
+
+	key = ft_split(arg, '=');
+	node = get_env(cmd->env_list, key[0]);
+	if (node)
+	{
+		untrack_pointer(node->value);
+		node->value = ft_strdup(key[1]);
+	}
+	else
+	{
+		node = new_env(key);
+		addback_env(&cmd->env_list, node);
+	}
+}
+
+int	export(char **args, t_command *cmd)
+{
+	int	i;
+	int	status;
+
+	i = 1;
+	status = SUCCESS;
+	if (!args[i])
+		return (print_export_list(cmd->env_list));
+	while (args[i])
+	{
+		if (!is_valid_key(args[i]))
+		{
+			printf("export: `%s': not a valid identifier\n", args[i]);
+			status = FAILURE;
+		}
+		else
+			export_arg(cmd, args[i]);
+		i++;
+	}
+	return (status);
 }

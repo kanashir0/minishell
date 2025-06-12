@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   environ.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:29:00 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 19:34:56 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/12 18:09:08 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	addback_env(t_env **head, t_env *new_node)
+void	addback_env(t_env **head, t_env *new_node)
 {
 	t_env	*last;
 
