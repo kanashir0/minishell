@@ -6,27 +6,11 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 17:32:07 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/11 15:08:52 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:25:45 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-static t_env	*get_env(t_env *env_list, char *key)
-{
-	t_env	*node;
-	int		len;
-
-	len = ft_strlen(key) + 1;
-	node = env_list;
-	while (node)
-	{
-		if (ft_strncmp(node->key, key, len) == 0)
-			return (node);
-		node = node->next;
-	}
-	return (NULL);
-}
 
 static int	pwd_oldpwd(t_env *env_list)
 {
