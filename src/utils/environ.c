@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:29:00 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/12 18:09:08 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:48:44 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	init_env(t_command *cmd, char **envp)
 			new_node->next = NULL;
 			addback_env(&cmd->env_list, new_node);
 		}
+		ft_free_matrix(tmp);
 	}
 }
 
