@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 19:45:08 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/17 19:46:34 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ int		builtin_exit(char **args, t_command *cmd);
 
 // Executor
 void	execute(t_command *cmd);
+int		exec_path(t_command *cmd);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);

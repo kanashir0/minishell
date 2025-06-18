@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/05/30 17:34:07 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/17 19:34:05 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,6 @@ void	execute(t_command *cmd)
 
 	res = is_builtin(cmd);
 	if (res == -1)
-		printf("executar pelo $PATH");
+		res = exec_path(cmd);
 	return ;
 }
