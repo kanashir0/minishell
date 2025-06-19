@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/12 18:09:42 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/19 17:05:12 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ t_command	*get_cmd_context(t_command *cmd);
 t_command	*init_command(void);
 void		init_env(t_command *cmd, char **envp);
 void		addback_env(t_env **head, t_env *new_node);
+t_env		*get_env(t_env *env_list, char *key);
 
 // Tokenizer
 void	tokenizer(t_command *cmd);
