@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/05 21:07:27 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:27:57 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,9 @@ void	execute(t_command *cmd);
 t_command	*get_cmd_context(t_command *cmd);
 t_command	*init_command(void);
 void		init_env(t_command *cmd, char **envp);
+void		error_handler(char *msg);
 
 // Tokenizer
-void	tokenizer(t_command *cmd);
+t_token	**tokenizer(char *input);
 
 #endif
