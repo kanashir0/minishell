@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/18 19:06:15 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/19 16:55:54 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,22 @@ char	*get_command(char *command)
 	return (full_path);
 }
 
+// int	process_child(t_command *cmd, char *command)
+// {
+// 	struct stat	file;
+// 	char		**environ;
+
+// 	if (stat(command, &file) == 0)
+// 	{
+// 		environ =
+// 		execve(command, cmd->args, environ);
+// 		perror("exceve");
+// 		exit(1);
+// 	}
+// 	printf("minishell: cmd not found: %s\n", command);
+// 	exit(127);
+// }
+
 int	exec_path(t_command *cmd)
 {
 	pid_t	pid;
@@ -52,6 +68,7 @@ int	exec_path(t_command *cmd)
 		return (printf("Error: Failed to fork process"), 1);
 	if (pid == 0)
 	{
+		// process_child(cmd, command);
 		execve(command, cmd->args, NULL);
 		perror("execve");
 		exit(1);
@@ -65,30 +82,3 @@ int	exec_path(t_command *cmd)
 	return (0);
 }
 
-// int	exec_path(t_command *cmd)
-// {
-// 	pid_t	pid;
-// 	char	*command;
-// 	char	*args[3];
-
-// 	command = "/bin/ls";
-// 	if (!command)
-// 		return (0);
-// 	pid = fork();
-// 	if (pid < 0)
-// 		return (printf("Error: Failed to fork process"), 1);
-// 	if (pid == 0)
-// 	{
-// 		args[0] = cmd->args[0];
-// 		args[1] = NULL;
-// 		execve(command, args, NULL);
-// 		perror("execve");
-// 		exit(1);
-// 	}
-// 	waitpid(pid, &cmd->status, 0);
-// 	if (WIFEXITED(cmd->status))
-// 		cmd->status = WEXITSTATUS(cmd->status);
-// 	else
-// 		cmd->status = 1;
-// 	return (0);
-// }
