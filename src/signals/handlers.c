@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handlers.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:41:34 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/01 16:41:57 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/21 16:21:22 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	sigint_handler(int signum)
 {
 	t_command	*cmd;
-	
+
 	cmd = get_cmd_context(NULL);
 	if (signum == SIGINT)
 	{

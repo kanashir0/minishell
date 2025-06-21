@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/19 17:04:54 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/21 16:20:21 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static t_env	*new_env(char *key, char *val)
 	return (node);
 }
 
-static void export_arg(t_command *cmd, char *arg)
+static void	export_arg(t_command *cmd, char *arg)
 {
 	t_env	*node;
 	char	**kv;
