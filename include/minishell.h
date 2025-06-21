@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/19 17:51:55 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/21 16:40:33 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,30 @@ typedef enum e_token_type
 	PIPE
 }	t_token_type;
 
+typedef enum e_node_type
+{
+	CMD_NODE,
+	REDIR_IN_NODE,
+	REDIR_OUT_NODE,
+	PIPE_NODE,
+	WORD_NODE
+}	t_node_type;
+
 typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
 	struct s_token	*next;
 }					t_token;
+
+typedef struct s_node
+{
+	t_node_type		type;
+	struct s_node	*left;
+	struct s_node	*right;
+	char			**argv;
+	char			**redir_file;
+}					t_node;
 
 typedef struct s_env
 {
@@ -94,5 +112,8 @@ void		error_handler(char *msg);
 
 // Tokenizer
 t_token	**tokenizer(char *input);
+
+// Parser
+t_node  *generate_ast(t_token **tokens);
 
 #endif
