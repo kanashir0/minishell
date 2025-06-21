@@ -61,6 +61,13 @@ fclean: clean
 re: fclean all
 
 valg:
-	valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp --trace-children=yes --track-origins=yes --track-fds=yes ./$(NAME)
+	@valgrind --leak-check=full \
+				--show-leak-kinds=all \
+				--suppressions=readline.supp \
+				--trace-children=yes \
+				--track-origins=yes \
+				--track-fds=yes \
+				--trace-children-skip='*/bin/*,*/sbin/*,/usr/bin/*' \
+				./$(NAME)
 
 .PHONY: all clean fclean valg re

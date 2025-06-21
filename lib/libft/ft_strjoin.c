@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 13:48:14 by cbrito-s          #+#    #+#             */
-/*   Updated: 2024/11/05 14:29:09 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/19 18:15:47 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*cat;
 
 	len = ft_strlen(s1) + ft_strlen(s2);
-	cat = (char *)malloc((len + 1) * sizeof(char));
+	cat = ft_collect_mem(sizeof(char), len + 1);
 	if (!cat)
 		return (NULL);
 	ft_strlcpy(cat, s1, ft_strlen(s1) + 1);

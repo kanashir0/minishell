@@ -6,11 +6,45 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/19 16:55:54 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/21 14:40:43 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+char	**environ_list(t_env *env_list)
+{
+	t_env	*node;
+	char	**envp;
+	char	*tmp;
+	int		i;
+	int		count;
+
+	if (!env_list)
+		return (NULL);
+	count = 0;
+	node = env_list;
+	while (node)
+	{
+		count++;
+		node = node->next;
+	}
+	envp = ft_collect_mem(sizeof(char *), count + 1);
+	if (!envp)
+		return (NULL);
+	i = 0;
+	node = env_list;
+	while (node)
+	{
+		tmp = ft_strjoin(node->key, "=");
+		envp[i] = ft_strjoin(tmp, node->value);
+		untrack_pointer(tmp);
+		i++;
+		node = node->next;
+	}
+	envp[i] = NULL;
+	return (envp);
+}
 
 char	*get_command(char *command)
 {
@@ -39,21 +73,27 @@ char	*get_command(char *command)
 	return (full_path);
 }
 
-// int	process_child(t_command *cmd, char *command)
-// {
-// 	struct stat	file;
-// 	char		**environ;
+int	process_child(t_command *cmd, char *command)
+{
+	struct stat	file;
+	char		**environ;
 
-// 	if (stat(command, &file) == 0)
-// 	{
-// 		environ =
-// 		execve(command, cmd->args, environ);
-// 		perror("exceve");
-// 		exit(1);
-// 	}
-// 	printf("minishell: cmd not found: %s\n", command);
-// 	exit(127);
-// }
+	environ = environ_list(cmd->env_list);
+	if (!environ)
+	{
+		perror("malloc");
+		exit (1);
+	}
+	if (stat(command, &file) == 0)
+	{
+		execve(command, cmd->args, environ);
+		perror("exceve");
+		ft_free_matrix(environ);
+		exit(1);
+	}
+	printf("minishell: cmd not found: %s\n", command);
+	exit(127);
+}
 
 int	exec_path(t_command *cmd)
 {
@@ -67,12 +107,7 @@ int	exec_path(t_command *cmd)
 	if (pid < 0)
 		return (printf("Error: Failed to fork process"), 1);
 	if (pid == 0)
-	{
-		// process_child(cmd, command);
-		execve(command, cmd->args, NULL);
-		perror("execve");
-		exit(1);
-	}
+		process_child(cmd, command);
 	waitpid(pid, &cmd->status, 0);
 	if (WIFEXITED(cmd->status))
 		cmd->status = WEXITSTATUS(cmd->status);
