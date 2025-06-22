@@ -27,10 +27,10 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(BUI_DIR), echo.c pwd.c cd.c export.c unset.c env.c exit.c) \
 		$(addprefix $(EXE_DIR), execute.c) \
 		$(addprefix $(EXP_DIR), ) \
-		$(addprefix $(PAR_DIR), ) \
+		$(addprefix $(PAR_DIR), parse_ast.c parse_utils.c) \
 		$(addprefix $(RED_DIR), ) \
 		$(addprefix $(SIG_DIR), setup.c handlers.c) \
-		$(addprefix $(TOK_DIR), tokenizer.c) \
+		$(addprefix $(TOK_DIR), tokenizer.c tokenizer_utils.c) \
 		$(addprefix $(UTL_DIR), init.c error.c environ.c) \
 		$(addprefix $(INP_DIR), input.c)
 

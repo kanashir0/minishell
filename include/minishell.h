@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/21 16:40:33 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/22 14:36:49 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,17 @@
 
 typedef enum e_token_type
 {
-	WORD,
-	REDIR_IN,
-	REDIR_OUT,
-	HEREDOC,
-	APPEND,
-	PIPE
+	WORD_TOKEN,
+	REDIR_IN_TOKEN,
+	REDIR_OUT_TOKEN,
+	HEREDOC_TOKEN,
+	APPEND_TOKEN,
+	PIPE_TOKEN
 }	t_token_type;
 
 typedef enum e_node_type
 {
-	CMD_NODE,
-	REDIR_IN_NODE,
-	REDIR_OUT_NODE,
+	REDIR_NODE,
 	PIPE_NODE,
 	WORD_NODE
 }	t_node_type;
@@ -59,7 +57,8 @@ typedef struct s_node
 	struct s_node	*left;
 	struct s_node	*right;
 	char			**argv;
-	char			**redir_file;
+	char			*redir_file;
+	t_token_type	redir_type;
 }					t_node;
 
 typedef struct s_env
@@ -112,8 +111,12 @@ void		error_handler(char *msg);
 
 // Tokenizer
 t_token	**tokenizer(char *input);
+int		match_token(t_token **tokens, t_token_type t_type);
+t_token	*consume_token(t_token **tokens);
 
 // Parser
-t_node  *generate_ast(t_token **tokens);
+t_node	*generate_ast(t_token **tokens);
+t_node	*new_node(t_node_type n_type, t_node *left, t_node *right);
+void	print_ast(t_node *ast, int indent);
 
 #endif

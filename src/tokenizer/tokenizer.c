@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:39:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/19 17:25:13 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/22 11:18:10 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 t_token_type	identify_token(char *input)
 {
 	if (!ft_strncmp(input, "|", 1))
-		return (PIPE);
+		return (PIPE_TOKEN);
 	else if (!ft_strncmp(input, "<", 1))
-		return (REDIR_IN);
+		return (REDIR_IN_TOKEN);
 	else if (!ft_strncmp(input, ">", 1))
-		return (REDIR_OUT);
+		return (REDIR_OUT_TOKEN);
 	else if (!ft_strncmp(input, ">>", 2))
-		return (APPEND);
+		return (APPEND_TOKEN);
 	else if (!ft_strncmp(input, "<<", 2))
-		return (HEREDOC);
+		return (HEREDOC_TOKEN);
 	else
-		return (WORD);
+		return (WORD_TOKEN);
 }
 
 int	get_token_len(char *input, t_token_type t_type)
@@ -33,13 +33,15 @@ int	get_token_len(char *input, t_token_type t_type)
 	int	len;
 
 	len = 0;
-	if (t_type == PIPE || t_type == REDIR_IN || t_type == REDIR_OUT)
+	if (t_type == PIPE_TOKEN || t_type == REDIR_IN_TOKEN
+		|| t_type == REDIR_OUT_TOKEN)
 		return (1);
-	else if (t_type == APPEND || t_type == HEREDOC)
+	else if (t_type == APPEND_TOKEN || t_type == HEREDOC_TOKEN)
 		return (2);
 	else
 	{
-		while (*input && !ft_isspace(*input) && (identify_token(input) == WORD))
+		while (*input && !ft_isspace(*input)
+			&& (identify_token(input) == WORD_TOKEN))
 		{
 			len++;
 			input++;
