@@ -14,6 +14,7 @@ INC_DIR = -I include/ -I $(LIB_DIR)
 OBJ_DIR = objs/
 SRC_DIR = src/
 BUI_DIR = src/builtins/
+ENV_DIR = src/env/
 EXE_DIR = src/executor/
 EXP_DIR = src/expansion/
 PAR_DIR = src/parser/
@@ -25,13 +26,14 @@ INP_DIR = src/input/
 
 SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(BUI_DIR), echo.c pwd.c cd.c export.c unset.c env.c exit.c) \
-		$(addprefix $(EXE_DIR), execute.c exec_path.c) \
+		$(addprefix $(ENV_DIR), environ.c env_utils.c) \
+		$(addprefix $(EXE_DIR), execute.c exec-path.c) \
 		$(addprefix $(EXP_DIR), ) \
 		$(addprefix $(PAR_DIR), ) \
 		$(addprefix $(RED_DIR), ) \
 		$(addprefix $(SIG_DIR), setup.c handlers.c) \
 		$(addprefix $(TOK_DIR), tokenizer.c) \
-		$(addprefix $(UTL_DIR), init.c error.c environ.c) \
+		$(addprefix $(UTL_DIR), init.c error.c) \
 		$(addprefix $(INP_DIR), input.c)
 
 OBJS = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)

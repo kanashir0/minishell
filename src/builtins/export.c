@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/19 17:04:54 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/22 15:12:31 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ static int	is_valid_key(char *str)
 {
 	if (!*str || !(ft_isalpha(*str) || *str == '_'))
 		return (0);
-	str++;
-	while (*str && *str == '=')
+	while (*str && *str != '=')
 	{
 		if (!(ft_isalnum(*str) || *str == '_'))
 			return (0);
@@ -26,35 +25,36 @@ static int	is_valid_key(char *str)
 	return (1);
 }
 
-static int	print_export_list(t_env *env_list)
+int	print_env(t_env **environ)
 {
-	t_env	*node;
+	int	i;
 
-	node = env_list;
-	while (node)
+	i = 0;
+	while (environ[i])
 	{
-		printf("declare -x %s", node->key);
-		if (node->value)
-			printf("=\"%s\"", node->value);
+		printf("declare -x %s", environ[i]->key);
+		if (environ[i]->value)
+			printf("=\"%s\"", environ[i]->value);
 		printf("\n");
-		node = node->next;
+		i++;
 	}
 	return (SUCCESS);
 }
 
-static t_env	*new_env(char *key, char *val)
+static int	print_export_list(t_env *env_list)
 {
-	t_env	*node;
+	t_env	**environ;
+	int		count;
+	int		i;
 
-	node = ft_collect_mem(1, sizeof(t_env));
-	node->key = ft_strdup(key);
-	node->value = val;
-	node->prev = NULL;
-	node->next = NULL;
-	return (node);
+	environ = env_list_copy(env_list);
+	count = count_env_arr(environ);
+	environ = env_list_ord(environ, count);
+	i = print_env(environ);
+	return (i);
 }
 
-static void export_arg(t_command *cmd, char *arg)
+static void	export_arg(t_command *cmd, char *arg)
 {
 	t_env	*node;
 	char	**kv;
@@ -93,11 +93,15 @@ int	export(char **args, t_command *cmd)
 	{
 		if (!is_valid_key(args[i]))
 		{
-			printf("export: `%s': not a valid identifier\n", args[i]);
+			printf("minishell: export: `%s': not a valid identifier\n", args[i]);
 			status = FAILURE;
 		}
 		else
+		{
+			if (args[i][0] == '_' && args[i][1] == '\0')
+				break ;
 			export_arg(cmd, args[i]);
+		}
 		i++;
 	}
 	return (status);
