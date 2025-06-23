@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/21 14:40:43 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/22 18:07:19 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,7 @@ char	**environ_list(t_env *env_list)
 
 	if (!env_list)
 		return (NULL);
-	count = 0;
-	node = env_list;
-	while (node)
-	{
-		count++;
-		node = node->next;
-	}
+	count = count_env(env_list);
 	envp = ft_collect_mem(sizeof(char *), count + 1);
 	if (!envp)
 		return (NULL);
@@ -53,6 +47,13 @@ char	*get_command(char *command)
 	char	*tmp;
 	int		i;
 
+	if (ft_strchr(command, '/'))
+	{
+		if (access(command, X_OK) == 0)
+			return (ft_strdup(command));
+		else
+			return (NULL);
+	}
 	paths = ft_split(getenv("PATH"), ':');
 	if (paths == NULL)
 		return (0);
@@ -95,6 +96,15 @@ int	process_child(t_command *cmd, char *command)
 	exit(127);
 }
 
+void	process_parent(t_command *cmd, pid_t pid)
+{
+	waitpid(pid, &cmd->status, 0);
+	if (WIFEXITED(cmd->status))
+		cmd->status = WEXITSTATUS(cmd->status);
+	else
+		cmd->status = 1;
+}
+
 int	exec_path(t_command *cmd)
 {
 	pid_t	pid;
@@ -108,11 +118,8 @@ int	exec_path(t_command *cmd)
 		return (printf("Error: Failed to fork process"), 1);
 	if (pid == 0)
 		process_child(cmd, command);
-	waitpid(pid, &cmd->status, 0);
-	if (WIFEXITED(cmd->status))
-		cmd->status = WEXITSTATUS(cmd->status);
-	else
-		cmd->status = 1;
+	if (pid > 0)
+		process_parent(cmd, pid);
 	untrack_pointer(command);
 	return (0);
 }

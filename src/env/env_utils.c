@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 14:15:46 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/22 14:21:53 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/22 17:25:15 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	count_env(t_env *env_list)
 
 int	count_env_arr(t_env **environ)
 {
-	int	 count;
+	int	count;
 
 	count = 0;
 	while (environ[count])
