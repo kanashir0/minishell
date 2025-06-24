@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/19 17:51:36 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/24 10:35:28 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	read_input(t_command *cmd)
 {
 	// TODO: fazer o free do input
-	cmd->input = readline("minishell> ");
+	cmd->input = readline(MINISHELL "minishell$ " COMMAND);
 	// TODO validação input
 	if (!cmd->input)
 	{

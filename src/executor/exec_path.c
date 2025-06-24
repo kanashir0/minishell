@@ -6,38 +6,37 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/22 18:07:19 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/24 14:15:03 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	**environ_list(t_env *env_list)
+char	*validate_cmd_path(char *command, int *res)
 {
-	t_env	*node;
-	char	**envp;
-	char	*tmp;
-	int		i;
-	int		count;
+	struct stat	info;
 
-	if (!env_list)
+	if (!command || !command[0])
 		return (NULL);
-	count = count_env(env_list);
-	envp = ft_collect_mem(sizeof(char *), count + 1);
-	if (!envp)
-		return (NULL);
-	i = 0;
-	node = env_list;
-	while (node)
+	if (command[0] == '/' || command[0] == '.')
 	{
-		tmp = ft_strjoin(node->key, "=");
-		envp[i] = ft_strjoin(tmp, node->value);
-		untrack_pointer(tmp);
-		i++;
-		node = node->next;
+		if (access(command, X_OK) != 0 || stat(command, &info) != 0)
+		{
+			if (errno == EACCES)
+				*res = -1;
+			else if (errno == ENOENT)
+				*res = -2;
+			return (NULL);
+		}
+		if (S_ISDIR(info.st_mode))
+		{
+			*res = -3;
+			return (NULL);
+		}
+		*res = 0;
+		return (ft_strdup(command));
 	}
-	envp[i] = NULL;
-	return (envp);
+	return (NULL);
 }
 
 char	*get_command(char *command)
@@ -47,13 +46,6 @@ char	*get_command(char *command)
 	char	*tmp;
 	int		i;
 
-	if (ft_strchr(command, '/'))
-	{
-		if (access(command, X_OK) == 0)
-			return (ft_strdup(command));
-		else
-			return (NULL);
-	}
 	paths = ft_split(getenv("PATH"), ':');
 	if (paths == NULL)
 		return (0);
@@ -79,7 +71,7 @@ int	process_child(t_command *cmd, char *command)
 	struct stat	file;
 	char		**environ;
 
-	environ = environ_list(cmd->env_list);
+	environ = environ_list(cmd->env_list, count_env(cmd->env_list));
 	if (!environ)
 	{
 		perror("malloc");
@@ -92,35 +84,48 @@ int	process_child(t_command *cmd, char *command)
 		ft_free_matrix(environ);
 		exit(1);
 	}
-	printf("minishell: cmd not found: %s\n", command);
-	exit(127);
+	printf("minishell: %s: could not execute command\n", command);
+	exit(-1);
 }
 
-void	process_parent(t_command *cmd, pid_t pid)
+int	process_parent(t_command *cmd, pid_t pid)
 {
 	waitpid(pid, &cmd->status, 0);
 	if (WIFEXITED(cmd->status))
 		cmd->status = WEXITSTATUS(cmd->status);
-	else
-		cmd->status = 1;
+	else if (WIFSIGNALED(cmd->status) && WTERMSIG(cmd->status) ==  SIGINT)
+	{
+		ft_putendl_fd("Quit (core dumped)", STDOUT_FILENO);
+		cmd->status = 128 + WTERMSIG(cmd->status);
+	}
+	return (cmd->status);
 }
 
 int	exec_path(t_command *cmd)
 {
 	pid_t	pid;
 	char	*command;
+	int		res;
 
-	command = get_command(cmd->args[0]);
+	res = 0;
+	command = validate_cmd_path(cmd->args[0], &res);
+	if (res < 0)
+		return (print_cmd_error(cmd->args[0], res));
 	if (!command)
-		return (printf("ERROR"), 1); // alterar o erro
+	{
+		command = get_command(cmd->args[0]);
+		if (!command)
+			return (print_cmd_error(cmd->args[0], res));
+	}
 	pid = fork();
+	process_signals(pid);
 	if (pid < 0)
-		return (printf("Error: Failed to fork process"), 1);
+		return (error_handler("Error: Failed to fork process\n"), 1);
 	if (pid == 0)
-		process_child(cmd, command);
+		res = process_child(cmd, command);
 	if (pid > 0)
-		process_parent(cmd, pid);
+		res = process_parent(cmd, pid);
 	untrack_pointer(command);
-	return (0);
+	return (res);
 }
 

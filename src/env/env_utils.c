@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 14:15:46 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/22 17:25:15 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/24 10:12:12 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,32 @@ t_env	*new_env(char *key, char *val)
 	node->prev = NULL;
 	node->next = NULL;
 	return (node);
+}
+
+char	**environ_list(t_env *env_list, int count)
+{
+	t_env	*node;
+	char	**envp;
+	char	*tmp;
+	int		i;
+
+	if (!env_list)
+		return (NULL);
+	envp = ft_collect_mem(sizeof(char *), count + 1);
+	if (!envp)
+		return (NULL);
+	i = 0;
+	node = env_list;
+	while (node)
+	{
+		tmp = ft_strjoin(node->key, "=");
+		if (node->value)
+			envp[i++] = ft_strjoin(tmp, node->value);
+		else
+			envp[i++] = ft_strdup(tmp);
+		untrack_pointer(tmp);
+		node = node->next;
+	}
+	envp[i] = NULL;
+	return (envp);
 }
