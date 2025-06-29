@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/29 19:08:44 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:31:25 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,5 @@ t_token	*consume_token(t_token **tokens);
 // Parser
 t_node	*generate_ast(t_token **tokens);
 t_node	*new_node(t_node_type n_type, t_node *left, t_node *right);
-void	print_ast(t_node *ast, int indent);
 
 #endif
