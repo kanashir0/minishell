@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/24 14:15:03 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/29 18:15:12 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,18 @@ char	*validate_cmd_path(char *command, int *res)
 	return (NULL);
 }
 
-char	*get_command(char *command)
+char	*get_command(t_command *cmd, char *command)
 {
+	t_env	*path;
 	char	**paths;
 	char	*full_path;
 	char	*tmp;
 	int		i;
 
-	paths = ft_split(getenv("PATH"), ':');
+	path = get_env(cmd->env_list, "PATH");
+	if (!path || !path->value)
+		return (NULL);
+	paths = ft_split(path->value, ':');
 	if (paths == NULL)
 		return (0);
 	i = 0;
@@ -113,7 +117,7 @@ int	exec_path(t_command *cmd)
 		return (print_cmd_error(cmd->args[0], res));
 	if (!command)
 	{
-		command = get_command(cmd->args[0]);
+		command = get_command(cmd, cmd->args[0]);
 		if (!command)
 			return (print_cmd_error(cmd->args[0], res));
 	}
