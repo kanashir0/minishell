@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/22 12:06:28 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:46:04 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	gambiarra(t_command *cmd)
 int	main(int ac, char **av, char **envp)
 {
 	t_command	*cmd;
+	t_node		*ast;
 
 	(void)ac;
 	(void)av;
@@ -32,10 +33,8 @@ int	main(int ac, char **av, char **envp)
 		if (!is_empty_input(cmd->input))
 		{
 			cmd->tokens = tokenizer(cmd->input);
-			t_node *ast = generate_ast(cmd->tokens);
-			print_ast(ast, 0);
-			// gambiarra(cmd);
-			// execute(cmd);
+			ast = generate_ast(cmd->tokens);
+			execute_ast(ast);
 		}
 	}
 	ft_clear_mem();

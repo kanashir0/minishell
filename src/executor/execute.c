@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/05/30 17:34:07 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:43:40 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int open_redir_file(t_token_type type, const char *filename)
+{
+	int	fd;
+
+	fd = -1;
+	if (type == REDIR_OUT_TOKEN)
+		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (type == APPEND_TOKEN)
+		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else if (type == REDIR_IN_TOKEN)
+		fd = open(filename, O_RDONLY);
+	else if (type == HEREDOC_TOKEN)
+		return (-1); //TODO: implementar HEREDOC
+	else
+		return (-1);
+	if (fd < 0)
+		perror("open error");
+	return (fd);
+}
 
 int	is_builtin(t_command *cmd)
 {

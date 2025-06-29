@@ -25,7 +25,7 @@ INP_DIR = src/input/
 
 SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(BUI_DIR), echo.c pwd.c cd.c export.c unset.c env.c exit.c) \
-		$(addprefix $(EXE_DIR), execute.c) \
+		$(addprefix $(EXE_DIR), execute.c execute_ast.c) \
 		$(addprefix $(EXP_DIR), ) \
 		$(addprefix $(PAR_DIR), parse_ast.c parse_utils.c) \
 		$(addprefix $(RED_DIR), ) \
