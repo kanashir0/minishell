@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/29 17:36:52 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:08:18 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,13 @@
 
 int	execute_command(t_node *node, int input_fd, int output_fd)
 {
-	pid_t	pid;
-	int		status;
+	t_command	*cmd;
 
-	pid = fork();
-	if (pid == 0)
-	{
-		if (input_fd != STDIN_FILENO)
-		{
-			dup2(input_fd, STDIN_FILENO);
-			close(input_fd);
-		}
-		if (output_fd != STDOUT_FILENO)
-		{
-			dup2(output_fd, STDOUT_FILENO);
-			close(output_fd);
-		}
-		execvp(node->argv[0], node->argv); // TODO refatorar funçao execute
-	}
-	if (input_fd != STDIN_FILENO)
-		close(input_fd);
-	if (output_fd != STDOUT_FILENO)
-		close(output_fd);
-	waitpid(pid, &status, 0);
-	return (WEXITSTATUS(status));
+	cmd = get_cmd_context(NULL);
+	cmd->status = is_builtin(node->argv, cmd);
+	if (cmd->status == -1)
+		cmd->status = exec_path(node->argv, input_fd, output_fd, cmd);
+	return (cmd->status);
 }
 
 int	execute_redir(t_node *node, int input_fd, int output_fd)

@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/29 17:45:00 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:08:44 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,18 @@
 # include <string.h>
 # include <unistd.h>
 # include <signal.h>
+# include <errno.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
 # define SUCCESS 0
 # define FAILURE 1
 # define SYNTAX_ERROR 2
+
+# define MINISHELL "\001\033[01;38;5;33m\002"
+# define COMMAND "\001\033[0m\002"
 
 typedef enum e_token_type
 {
@@ -81,36 +86,49 @@ typedef struct s_command
 }			t_command;
 
 // Input data
-void	read_input(t_command *cmd);
-int		is_empty_input(char *input);
-int		ft_isspace(int c);
+void		read_input(t_command *cmd);
+int			is_empty_input(char *input);
+int			ft_isspace(int c);
 
 // Signals
-void	setup_signals(void);
-void	sigint_handler(int signum);
+void		setup_signals(void);
+void		sigint_handler(int signum);
+void		process_signals(int pid);
 
 // Built-ins
-int		echo(char **args);
-int		pwd(t_command *cmd);
-int		cd(char **args, t_command *cmd);
-int		export(char **args, t_command *cmd);
-int		unset(char **args, t_command *cmd);
-int		env(char **args, t_command *cmd);
-int		builtin_exit(char **args, t_command *cmd);
+int			echo(char **args);
+int			pwd(t_command *cmd);
+int			cd(char **args, t_command *cmd);
+int			export(char **args, t_command *cmd);
+int			unset(char **args, t_command *cmd);
+int			env(char **args, t_command *cmd);
+int			builtin_exit(char **args, t_command *cmd);
+int			is_builtin(char **args, t_command *cmd);
+
+// env
+t_env		**env_list_copy(t_env *env_list);
+t_env		**env_list_ord(t_env **environ, int count);
+void		addback_env(t_env **head, t_env *new_node);
+t_env		*get_env(t_env *env_list, char *key);
+t_env		*new_env(char *key, char *val);
+void		ft_swap(t_env **a, t_env **b);
+int			count_env(t_env *env_list);
+int			count_env_arr(t_env **environ);
+char		**environ_list(t_env *env_list, int count);
 
 // Executor
-void	execute(t_command *cmd);
 int 	open_redir_file(t_token_type type, const char *filename);
 int		execute_node(t_node *node, int input_fd, int output_fd);
 int		execute_ast(t_node *root);
+int		exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);
 t_command	*init_command(void);
 void		init_env(t_command *cmd, char **envp);
-void		addback_env(t_env **head, t_env *new_node);
-t_env		*get_env(t_env *env_list, char *key);
 void		error_handler(char *msg);
+int			print_cmd_error(char *command, int res);
+
 
 // Tokenizer
 t_token	**tokenizer(char *input);

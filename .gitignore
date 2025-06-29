@@ -3,3 +3,4 @@ objs/
 *.o
 *.a
 minishell
+minishell_test
