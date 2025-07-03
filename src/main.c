@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/29 19:24:44 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/03 19:23:36 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int ac, char **av, char **envp)
 		{
 			cmd->tokens = tokenizer(cmd->input);
 			ast = generate_ast(cmd->tokens);
+			expand(ast);
 			execute_ast(ast);
 			// TODO: clear_ast(ast);
 		}
