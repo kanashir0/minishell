@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 18:47:51 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/03 19:26:35 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/04 11:54:08 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,12 @@
 
 static char	*get_env_value(t_env *environ, char *key)
 {
-	t_env	*curr;
-	int		key_len;
+	t_env	*ev;
 
-	curr = environ;
-	key_len = ft_strlen(key);
-	while (curr)
-	{
-		if (ft_strncmp(curr->key, key, key_len + 1) == 0)
-			return (curr->value);
-		curr = curr->next;
-	}
-	return ("");
+	ev = get_env(environ, key);
+	if (!ev || !ev->value)
+		return (NULL);
+	return (ev->value);
 }
 
 void	append_and_free(char **res, char *tmp)
@@ -33,8 +27,10 @@ void	append_and_free(char **res, char *tmp)
 	char	*joined;
 
 	joined = ft_strjoin(*res, tmp);
-	untrack_pointer(*res);
-	untrack_pointer(tmp);
+	if (*res)
+		untrack_pointer(*res);
+	if (tmp)
+		untrack_pointer(tmp);
 	*res = joined;
 }
 
@@ -48,7 +44,40 @@ char	*extract_env_value(char *input, int *i, t_env *environ)
 	while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
 		key[k++] = input[(*i)++];
 	key[k] = '\0';
-	val = ft_strdup(get_env_value(environ, key));
-	untrack_pointer(key);
-	return (val);
+	val = get_env_value(environ, key);
+	if (!val)
+		return (ft_strdup(""));
+	return (ft_strdup(val));
+}
+
+char	*handle_dollar_special_cases(char c, int *i, int status)
+{
+	(*i)++;
+	if (c == '?')
+		return (ft_itoa(status));
+	if (c == '$')
+		return (ft_itoa(getpid()));
+	return (NULL);
+}
+
+char	*handle_dollar(char *input, int *i, t_env *ev, int status)
+{
+	if (input[*i] != '$')
+		return (ft_substr(input, (*i)++, 1));
+	if (input[*i + 1] == '\0')
+	{
+		(*i)++;
+		return (ft_strdup("$"));
+	}
+	(*i)++;
+	if (input[*i] == '?')
+		return (handle_dollar_special_cases('?', i, status));
+	else if (input[*i] == '$')
+		return (handle_dollar_special_cases('$', i, status));
+	else if (input[*i] == '\0')
+		return (ft_strdup("$"));
+	else if (ft_isalnum(input[*i]) || input[*i] == '_')
+		return (extract_env_value(input, i, ev));
+	else
+		return (ft_strdup("$"));
 }

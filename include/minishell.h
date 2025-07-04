@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/03 19:20:46 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/04 09:45:58 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
 void		expand(t_node *node);
 void		append_and_free(char **res, char *tmp);
 char		*extract_env_value(char *input, int *i, t_env *environ);
+char		*handle_dollar_special_cases(char c, int *i, int status);
+char		*handle_dollar(char *input, int *i, t_env *ev, int status);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);

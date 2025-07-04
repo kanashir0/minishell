@@ -4,3 +4,4 @@ objs/
 *.a
 minishell
 minishell_test
+minishell_tester

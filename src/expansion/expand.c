@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/03 19:24:14 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/04 10:38:22 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,7 @@ static void	double_quoted(char *input, int *i, char **res, t_env *ev, int status
 	(*i)++;
 	while (input[*i] && input[*i] != '"')
 	{
-		if (input[*i] == '$')
-		{
-			(*i)++;
-			if (input[*i] == '?')
-			{
-				tmp = ft_itoa(status);
-				(*i)++;
-			}
-			else
-				tmp = extract_env_value(input, i, ev);
-		}
-		else
-		{
-			tmp = ft_substr(input, *i, 1);
-			(*i)++;
-		}
+		tmp = handle_dollar(input, i, ev, status);
 		append_and_free(res, tmp);
 	}
 	if (input[*i] == '"')
@@ -60,22 +45,7 @@ static void	unquoted(char *input, int *i, char **res, t_env *ev, int status)
 {
 	char	*tmp;
 
-	if (input[*i] == '$')
-	{
-		(*i)++;
-		if (input[*i] == '?')
-		{
-			tmp = ft_itoa(status);
-			(*i)++;
-		}
-		else
-			tmp = extract_env_value(input, i, ev);
-	}
-	else
-	{
-		tmp = ft_substr(input, *i, 1);
-		(*i)++;
-	}
+	tmp = handle_dollar(input, i, ev, status);
 	append_and_free(res, tmp);
 }
 
@@ -102,13 +72,11 @@ void	expand(t_node *node)
 {
 	t_command	*cmd;
 	t_env		*environ;
-	int			status;
 	int			index;
 	char		*new;
 
 	cmd = get_cmd_context(NULL);
 	environ = cmd->env_list;
-	status = cmd->status;
 	if (!node)
 		return ;
 	if (node->type == WORD_NODE && node->argv)
@@ -116,8 +84,7 @@ void	expand(t_node *node)
 		index = 0;
 		while (node->argv[index])
 		{
-			new = expand_string(node->argv[index], environ, status);
-			free(node->argv[index]);
+			new = expand_string(node->argv[index], environ, cmd->status);
 			node->argv[index] = new;
 			index++;
 		}
