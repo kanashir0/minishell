@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/29 19:31:25 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:09:04 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ typedef struct s_command
 	char	**args;
 	int		signal;
 	int		status;
+	int		input_fd;
+	int		output_fd;
 	t_env	*env_list;
 	t_token	**tokens;
 }			t_command;
@@ -120,7 +122,7 @@ char		**environ_list(t_env *env_list, int count);
 int 	open_redir_file(t_token_type type, const char *filename);
 int		execute_node(t_node *node, int input_fd, int output_fd);
 int		execute_ast(t_node *root);
-int		exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
+int		exec_path(char **args, t_command *cmd);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);

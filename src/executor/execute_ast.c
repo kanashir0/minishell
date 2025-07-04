@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/29 19:08:18 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:13:38 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	execute_command(t_node *node, int input_fd, int output_fd)
+int	execute_command(t_node *node)
 {
 	t_command	*cmd;
 
 	cmd = get_cmd_context(NULL);
 	cmd->status = is_builtin(node->argv, cmd);
 	if (cmd->status == -1)
-		cmd->status = exec_path(node->argv, input_fd, output_fd, cmd);
+		cmd->status = exec_path(node->argv, cmd);
 	return (cmd->status);
 }
 
@@ -48,14 +48,18 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 	if (left_pid == 0)
 	{
 		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO);
 		execute_node(node->left, input_fd, pipefd[1]);
+		close(pipefd[1]);
 		exit(0);
 	}
 	right_pid = fork();
 	if (right_pid == 0)
 	{
 		close(pipefd[1]);
+		dup2(pipefd[0], STDIN_FILENO);
 		execute_node(node->right, pipefd[0], output_fd);
+		close(pipefd[0]);
 		exit(0);
 	}
 	close(pipefd[0]);
@@ -74,12 +78,17 @@ int	execute_node(t_node *node, int input_fd, int output_fd)
 	else if (node->type == REDIR_NODE)
 		return (execute_redir(node, input_fd, output_fd));
 	else if (node->type == WORD_NODE)
-		return (execute_command(node, input_fd, output_fd));
+		return (execute_command(node));
 	else
 		return (1);
 }
 
 int	execute_ast(t_node *root)
 {
-	return (execute_node(root, STDIN_FILENO, STDOUT_FILENO));
+	t_command	*cmd;
+
+	cmd = get_cmd_context(NULL);
+	cmd->input_fd = STDIN_FILENO;
+	cmd->output_fd = STDOUT_FILENO;
+	return (execute_node(root, cmd->input_fd, cmd->output_fd));
 }
