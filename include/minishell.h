@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/05 19:30:32 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/05 20:12:37 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ int			open_redir_file(t_token_type type, const char *filename);
 int			execute_node(t_node *node, int input_fd, int output_fd);
 int			execute_ast(t_node *root);
 int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
+void		close_fd(int input_fd, int output_fd);
 
 // Expansion
 void		expand(t_node *node);
@@ -146,5 +147,8 @@ t_token		*consume_token(t_token **tokens);
 // Parser
 t_node		*generate_ast(t_token **tokens);
 t_node		*new_node(t_node_type n_type, t_node *left, t_node *right);
+
+// Helpers
+char		*concatenate(char *s1, char *s2, char *s3);
 
 #endif
