@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/29 19:19:58 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:37:12 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ char	*get_command(t_command *cmd, char *command)
 	t_env	*path;
 	char	**paths;
 	char	*full_path;
-	char	*tmp;
 	int		i;
 
 	path = get_env(cmd->env_list, "PATH");
@@ -56,9 +55,7 @@ char	*get_command(t_command *cmd, char *command)
 	i = 0;
 	while (paths[i])
 	{
-		tmp = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(tmp, command);
-		untrack_pointer(tmp);
+		full_path = concatenate(paths[i], "/", command);
 		if (access(full_path, X_OK) == 0)
 			break ;
 		untrack_pointer(full_path);
@@ -83,16 +80,7 @@ int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char
 	}
 	if (stat(command, &file) == 0)
 	{
-		if (input_fd != STDIN_FILENO)
-		{
-			dup2(input_fd, STDIN_FILENO);
-			close(input_fd);
-		}
-		if (output_fd != STDOUT_FILENO)
-		{
-			dup2(output_fd, STDOUT_FILENO);
-			close(output_fd);
-		}
+		close_fd(input_fd, output_fd);
 		execve(command, args, environ);
 		perror("exceve");
 		ft_free_matrix(environ);

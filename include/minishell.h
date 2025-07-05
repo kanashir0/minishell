@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/29 19:31:25 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:37:33 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ int 	open_redir_file(t_token_type type, const char *filename);
 int		execute_node(t_node *node, int input_fd, int output_fd);
 int		execute_ast(t_node *root);
 int		exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
+void	close_fd(int input_fd, int output_fd);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);
@@ -138,5 +139,8 @@ t_token	*consume_token(t_token **tokens);
 // Parser
 t_node	*generate_ast(t_token **tokens);
 t_node	*new_node(t_node_type n_type, t_node *left, t_node *right);
+
+// Helpers
+char		*concatenate(char *s1, char *s2, char *s3);
 
 #endif
