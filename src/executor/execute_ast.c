@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/29 19:08:18 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/01 20:29:47 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,18 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 	if (left_pid == 0)
 	{
 		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO);
 		execute_node(node->left, input_fd, pipefd[1]);
+		close(pipefd[1]);
 		exit(0);
 	}
 	right_pid = fork();
 	if (right_pid == 0)
 	{
 		close(pipefd[1]);
+		dup2(pipefd[0], STDIN_FILENO);
 		execute_node(node->right, pipefd[0], output_fd);
+		close(pipefd[0]);
 		exit(0);
 	}
 	close(pipefd[0]);
