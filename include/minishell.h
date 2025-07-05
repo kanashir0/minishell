@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/04 09:45:58 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/05 19:30:32 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,8 +133,10 @@ char		*handle_dollar(char *input, int *i, t_env *ev, int status);
 t_command	*get_cmd_context(t_command *cmd);
 t_command	*init_command(void);
 void		init_env(t_command *cmd, char **envp);
+void		init_under(t_command *cmd, char *prog);
 void		error_handler(char *msg);
 int			print_cmd_error(char *command, int res);
+void 		update_under(t_command *cmd, char *new_value);
 
 // Tokenizer
 t_token		**tokenizer(char *input);
