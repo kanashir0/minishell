@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/03 19:23:36 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/05 19:29:26 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int	main(int ac, char **av, char **envp)
 	t_node		*ast;
 
 	(void)ac;
-	(void)av;
 	cmd = init_command();
 	init_env(cmd, envp);
+	init_under(cmd, av[0]);
 	setup_signals();
 	while (42)
 	{

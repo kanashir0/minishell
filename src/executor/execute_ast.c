@@ -6,20 +6,31 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/01 20:29:47 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/05 20:05:10 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	execute_command(t_node *node, int input_fd, int output_fd)
+int execute_command(t_node *node, int input_fd, int output_fd)
 {
 	t_command	*cmd;
+	char		**args;
+	int			i;
 
-	cmd = get_cmd_context(NULL);
-	cmd->status = is_builtin(node->argv, cmd);
+	cmd  = get_cmd_context(NULL);
+	args = node->argv;
+	i = 0;
+	while (args[i])
+		i++;
+	if (i > 0)
+		update_under(cmd, args[i - 1]);
+	else
+		update_under(cmd, args[0]);
+	cmd->status = is_builtin(args, cmd);
 	if (cmd->status == -1)
-		cmd->status = exec_path(node->argv, input_fd, output_fd, cmd);
+		cmd->status = exec_path(args, input_fd, output_fd, cmd);
+
 	return (cmd->status);
 }
 

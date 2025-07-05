@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 18:47:51 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/04 11:54:08 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/05 17:21:40 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ char	*handle_dollar_special_cases(char c, int *i, int status)
 		return (ft_itoa(status));
 	if (c == '$')
 		return (ft_itoa(getpid()));
+	if (c == '!')
+		return (ft_strdup(""));
 	return (NULL);
 }
 
@@ -64,16 +66,13 @@ char	*handle_dollar(char *input, int *i, t_env *ev, int status)
 {
 	if (input[*i] != '$')
 		return (ft_substr(input, (*i)++, 1));
-	if (input[*i + 1] == '\0')
-	{
-		(*i)++;
-		return (ft_strdup("$"));
-	}
 	(*i)++;
 	if (input[*i] == '?')
 		return (handle_dollar_special_cases('?', i, status));
 	else if (input[*i] == '$')
 		return (handle_dollar_special_cases('$', i, status));
+	else if (input[*i] == '!')
+		return (handle_dollar_special_cases('!', i, status));
 	else if (input[*i] == '\0')
 		return (ft_strdup("$"));
 	else if (ft_isalnum(input[*i]) || input[*i] == '_')
