@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/05 20:12:37 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/07 19:31:01 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,11 +138,16 @@ void		init_under(t_command *cmd, char *prog);
 void		error_handler(char *msg);
 int			print_cmd_error(char *command, int res);
 void 		update_under(t_command *cmd, char *new_value);
+int			handle_quote(char *input, int len);
+int			handle_escape(char *input, int len);
+void		syntax_error_unclosed_quote(void);
 
 // Tokenizer
 t_token		**tokenizer(char *input);
 int			match_token(t_token **tokens, t_token_type t_type);
 t_token		*consume_token(t_token **tokens);
+void		free_token_list(t_token **tokens);
+char		*remove_backslashes(char *str);
 
 // Parser
 t_node		*generate_ast(t_token **tokens);
