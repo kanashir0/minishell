@@ -59,7 +59,6 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 	if (left_pid == 0)
 	{
 		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
 		execute_node(node->left, input_fd, pipefd[1]);
 		close(pipefd[1]);
 		exit(0);
@@ -68,7 +67,6 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 	if (right_pid == 0)
 	{
 		close(pipefd[1]);
-		dup2(pipefd[0], STDIN_FILENO);
 		execute_node(node->right, pipefd[0], output_fd);
 		close(pipefd[0]);
 		exit(0);
