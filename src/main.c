@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/03 18:32:11 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/09 12:47:43 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int	main(int ac, char **av, char **envp)
 	t_node		*ast;
 
 	(void)ac;
-	(void)av;
 	cmd = init_command();
 	init_env(cmd, envp);
+	init_under(cmd, av[0]);
 	setup_signals();
 	while (42)
 	{
@@ -34,6 +34,7 @@ int	main(int ac, char **av, char **envp)
 		{
 			cmd->tokens = tokenizer(cmd->input);
 			ast = generate_ast(cmd->tokens);
+			expand(ast);
 			execute_ast(ast);
 			free_ast(ast);
 		}

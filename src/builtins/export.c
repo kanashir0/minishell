@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/22 15:12:31 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/05 19:29:14 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@ int	print_env(t_env **environ)
 	i = 0;
 	while (environ[i])
 	{
+		if (ft_strncmp(environ[i]->key, "_", 1) == 0
+				&& environ[i]->key[1] == '\0')
+		{
+			i++;
+			continue ;
+		}
 		printf("declare -x %s", environ[i]->key);
 		if (environ[i]->value)
 			printf("=\"%s\"", environ[i]->value);

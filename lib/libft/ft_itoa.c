@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 10:29:17 by cbrito-s          #+#    #+#             */
-/*   Updated: 2024/10/30 11:00:44 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/04 10:40:59 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*ft_itoa(int n)
 
 	nb = n;
 	len = ft_length(n);
-	str = (char *)malloc((len + 1) * sizeof(char));
+	str = ft_collect_mem(sizeof(char), len + 1);
 	if (!str)
 		return (NULL);
 	str[len] = '\0';

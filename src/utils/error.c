@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:58:40 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/24 10:10:50 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/04 10:28:59 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ void	error_handler(char *msg)
 }
 int	print_cmd_error(char *command, int res)
 {
+	if (res == 0)
+	{
+		ft_putstr_fd(command, 2);
+		return (ft_putstr_fd(": command not found\n", 2), 127);
+	}
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(command, 2);
 	if (res == -1)
@@ -28,7 +33,5 @@ int	print_cmd_error(char *command, int res)
 		return (ft_putstr_fd(": No such file or directory\n", 2), 127);
 	if (res == -3)
 		return (ft_putstr_fd(": Is a directory\n", 2), 126);
-	if (res == 0)
-		return (ft_putstr_fd(": command not found\n", 2), 127);
 	return (1);
 }
