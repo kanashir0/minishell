@@ -24,7 +24,7 @@ int open_redir_file(t_token_type type, const char *filename)
 	else if (type == REDIR_IN_TOKEN)
 		fd = open(filename, O_RDONLY);
 	else if (type == HEREDOC_TOKEN)
-		return (-1); //TODO: implementar HEREDOC
+		return (handle_heredoc(filename));
 	else
 		return (-1);
 	if (fd < 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 16:31:16 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/22 14:56:17 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/09 12:23:34 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,14 @@ t_node	*parse_word(t_token **tokens)
 		return (NULL);
 	}
 	while (match_token(tokens, REDIR_OUT_TOKEN)
-		|| match_token(tokens, REDIR_IN_TOKEN))
+		|| match_token(tokens, REDIR_IN_TOKEN)
+		|| match_token(tokens, HEREDOC_TOKEN)
+		|| match_token(tokens, APPEND_TOKEN))
 	{
 		redir_type = consume_token(tokens)->type;
 		if (!match_token(tokens, WORD_TOKEN))
 		{
-			// free_ast(word);
+			free_ast(word);
 			return (NULL);
 		}
 		redir = new_node(REDIR_NODE, word, NULL);
@@ -77,7 +79,7 @@ t_node	*parse_pipe(t_token **tokens)
 		right = parse_word(tokens);
 		if (!right)
 		{
-			// free_ast(left);
+			free_ast(left);
 			return (NULL);
 		}
 		pipe = new_node(PIPE_NODE, left, right);

@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/29 19:24:44 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/03 18:32:11 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	main(int ac, char **av, char **envp)
 			cmd->tokens = tokenizer(cmd->input);
 			ast = generate_ast(cmd->tokens);
 			execute_ast(ast);
-			// TODO: clear_ast(ast);
+			free_ast(ast);
 		}
 	}
 	ft_clear_mem();

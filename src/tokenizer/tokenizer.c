@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:39:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/22 11:18:10 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/09 12:30:14 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ t_token_type	identify_token(char *input)
 {
 	if (!ft_strncmp(input, "|", 1))
 		return (PIPE_TOKEN);
-	else if (!ft_strncmp(input, "<", 1))
-		return (REDIR_IN_TOKEN);
-	else if (!ft_strncmp(input, ">", 1))
-		return (REDIR_OUT_TOKEN);
 	else if (!ft_strncmp(input, ">>", 2))
 		return (APPEND_TOKEN);
 	else if (!ft_strncmp(input, "<<", 2))
 		return (HEREDOC_TOKEN);
+	else if (!ft_strncmp(input, "<", 1))
+		return (REDIR_IN_TOKEN);
+	else if (!ft_strncmp(input, ">", 1))
+		return (REDIR_OUT_TOKEN);
 	else
 		return (WORD_TOKEN);
 }

@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 11:05:28 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/29 19:31:03 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/03 18:35:29 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,22 @@ t_node	*new_node(t_node_type n_type, t_node *left, t_node *right)
 	return (node);
 }
 
-// void	print_ast(t_node *ast, int indent)
-// {
-// 	if (!ast) return ;
-// 	for (int i = 0; i < indent; i++) printf("\t");
-// 	switch (ast->type) {
-// 		case WORD_NODE:
-// 			printf("WORD: ");
-// 			for (int i = 0; ast->argv && ast->argv[i]; i++)
-// 				printf(" %s", ast->argv[i]);
-// 			printf("\n");
-// 			break;
-// 		case PIPE_NODE:
-// 			printf("PIPE\n");
-// 			print_ast(ast->left, indent + 1);
-// 			print_ast(ast->right, indent + 1);
-// 			break;
-// 		case REDIR_NODE:
-// 			printf("REDIR (%s): %s\n",
-// 				ast->redir_type == REDIR_OUT_TOKEN ? ">" : "<",
-// 				ast->redir_file);
-// 			print_ast(ast->left, indent + 1);
-// 			break;
-// 	}
-// }
+void	free_ast(t_node *node)
+{
+	int	i;
+
+	if (!node)
+		return;
+	free_ast(node->left);
+	free_ast(node->right);
+	i = 0;
+	if (node->type == WORD_NODE && node->argv) {
+		while (node->argv[i])
+			untrack_pointer(node->argv[i++]);
+		untrack_pointer(node->argv);
+	}
+	if (node->type == REDIR_NODE && node->redir_file)
+		untrack_pointer(node->redir_file);
+	untrack_pointer(node);
+	return ;
+}
