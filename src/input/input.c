@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/24 10:35:28 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:52:33 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,23 @@ int	is_empty_input(char *input)
 		input++;
 	}
 	return (1);
+}
+
+int	check_input(char *input, int *len)
+{
+	char	quote;
+	int		start;
+
+	quote = input[*len];
+	start = *len;
+	(*len)++;
+	while (input[*len] && input[*len] != quote)
+		(*len)++;
+	if (input[*len] == quote)
+	{
+		(*len)++;
+		return (*len - start);
+	}
+	syntax_error_unclosed_quote(quote);
+	return (-1);
 }

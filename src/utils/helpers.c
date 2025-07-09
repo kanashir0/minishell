@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:25:40 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/07 19:10:38 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:27:33 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,38 +23,10 @@ char	*concatenate(char *s1, char *s2, char *s3)
 	return (full);
 }
 
-int	handle_escape(char *input, int len)
+void	syntax_error_unclosed_quote(char quote)
 {
-	if (input[len] == '\\')
-	{
-		if (input[len + 1])
-			return (2);
-		return (1);
-	}
-	return (0);
-}
-
-int	handle_quote(char *input, int len)
-{
-	char	quote;
-	int		start;
-
-	quote = input[len++];
-	start = len;
-	while (input[len] && input[len] != quote)
-	{
-		if (quote == '\"' && input[len] == '\\' && input[len + 1])
-			len += 2;
-		else
-			len++;
-	}
-	if (input[len] == quote)
-		return (len - start + 2);
-	return (-1);
-}
-
-void	syntax_error_unclosed_quote(void)
-{
-	ft_putstr_fd("syntax error: unclosed quote\n", 2);
+	ft_putstr_fd("syntax error: unclosed quote ", 2);
+	ft_putchar_fd(quote, 2);
+	ft_putstr_fd("\n", 2);
 	get_cmd_context(NULL)->status = 2;
 }

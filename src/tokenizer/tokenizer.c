@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:39:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/07 19:33:20 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:57:27 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,15 @@ t_token_type	identify_token(char *input)
 {
 	if (!ft_strncmp(input, ">>", 2))
 		return (APPEND_TOKEN);
-	else if (!ft_strncmp(input, "<<", 2))
+	if (!ft_strncmp(input, "<<", 2))
 		return (HEREDOC_TOKEN);
-	else if (!ft_strncmp(input, "|", 1))
+	if (!ft_strncmp(input, "|", 1))
 		return (PIPE_TOKEN);
-	else if (!ft_strncmp(input, "<", 1))
+	if (!ft_strncmp(input, "<", 1))
 		return (REDIR_IN_TOKEN);
-	else if (!ft_strncmp(input, ">", 1))
+	if (!ft_strncmp(input, ">", 1))
 		return (REDIR_OUT_TOKEN);
-	else
-		return (WORD_TOKEN);
+	return (WORD_TOKEN);
 }
 
 int	get_token_len(char *input, t_token_type t_type)
@@ -42,14 +41,14 @@ int	get_token_len(char *input, t_token_type t_type)
 	while (input[len] && !ft_isspace(input[len])
 		&& (identify_token(input + len) == WORD_TOKEN))
 	{
-		if ((delta = handle_escape(input, len)) > 0)
-			len += delta;
-		else if (input[len] == '\"' || input[len] == '\'')
+		if (input[len] == '"' || input[len] == '\'')
 		{
-			delta = handle_quote(input, len);
+			delta = check_input(input, &len);
 			if (delta < 0)
-				return (syntax_error_unclosed_quote(), -1);
-			len += delta;
+				return (-1);
+			if (delta > 0)
+				continue ;
+			len++;
 		}
 		else
 			len++;
@@ -69,12 +68,7 @@ t_token	*get_token(char *input, t_token_type t_type, size_t token_len)
 	if (!token->value)
 		error_handler("Memory allocation error.\n");
 	ft_strlcpy(token->value, input, token_len + 1);
-	if (t_type == WORD_TOKEN && token->value)
-	{
-		char *clean = remove_backslashes(token->value);
-		untrack_pointer(token->value);
-		token->value = clean;
-	}
+	token->next = NULL;
 	return (token);
 }
 
@@ -110,16 +104,15 @@ t_token	**tokenizer(char *input)
 	{
 		while (*input && ft_isspace(*input))
 			input++;
-		if (*input)
-		{
-			t_type = identify_token(input);
-			token_len = get_token_len(input, t_type);
-			if (token_len < 0)
-				return (free_token_list(tokens), NULL);
-			token = get_token(input, t_type, token_len);
-			append_token(tokens, token);
-			input += token_len;
-		}
+		if (!*input)
+			break ;
+		t_type = identify_token(input);
+		token_len = get_token_len(input, t_type);
+		if (token_len < 0)
+			return (free_token_list(tokens), NULL);
+		token = get_token(input, t_type, token_len);
+		append_token(tokens, token);
+		input += token_len;
 	}
 	return (tokens);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/07 19:31:01 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:41:33 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,11 @@ typedef struct s_command
 	t_token	**tokens;
 }			t_command;
 
-// Input data
+// Input
 void		read_input(t_command *cmd);
 int			is_empty_input(char *input);
 int			ft_isspace(int c);
+int			check_input(char *input, int *len);
 
 // Signals
 void		setup_signals(void);
@@ -138,16 +139,12 @@ void		init_under(t_command *cmd, char *prog);
 void		error_handler(char *msg);
 int			print_cmd_error(char *command, int res);
 void 		update_under(t_command *cmd, char *new_value);
-int			handle_quote(char *input, int len);
-int			handle_escape(char *input, int len);
-void		syntax_error_unclosed_quote(void);
 
 // Tokenizer
 t_token		**tokenizer(char *input);
 int			match_token(t_token **tokens, t_token_type t_type);
 t_token		*consume_token(t_token **tokens);
 void		free_token_list(t_token **tokens);
-char		*remove_backslashes(char *str);
 
 // Parser
 t_node		*generate_ast(t_token **tokens);
@@ -155,5 +152,6 @@ t_node		*new_node(t_node_type n_type, t_node *left, t_node *right);
 
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);
+void		syntax_error_unclosed_quote(char quote);
 
 #endif

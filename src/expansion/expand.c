@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/07 19:19:32 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:24:14 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,9 @@ static void	double_quoted(char *input, int *i, char **res, t_env *ev, int status
 	char	*tmp;
 
 	(*i)++;
-	while (input[*i] && input[*i] != '\"')
+	while (input[*i] && input[*i] != '"')
 	{
-		if (input[*i] == '\\' && input[*i + 1])
-		{
-			tmp = ft_substr(input, *i + 1, 1);
-			append_and_free(res, tmp);
-			*i += 2;
-		}
-		else if (input[*i] == '$')
+		if (input[*i] == '$')
 		{
 			tmp = handle_dollar(input, i, ev, status);
 			append_and_free(res, tmp);
@@ -75,7 +69,7 @@ static char	*expand_string(char *input, t_env *environ, int status)
 	{
 		if (input[i] == '\'')
 			single_quoted(input, &i, &res);
-		else if (input[i] == '\"')
+		else if (input[i] == '"')
 			double_quoted(input, &i, &res, environ, status);
 		else
 			unquoted(input, &i, &res, environ, status);
