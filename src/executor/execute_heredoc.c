@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
+/*   execute_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:00:00 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/09 12:33:50 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:25:32 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,18 @@ static char	*get_heredoc_filename(void)
 	return (filename);
 }
 
-static int	get_heredoc_input(int fd, char *filename, const char *delimiter)
+static int	heredoc_child(char *filename, const char *delimiter)
 {
 	char	*line;
+	int		fd;
 
+	signal(SIGINT, heredoc_sigint_handler);
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+	{
+		perror("open error");
+		exit(1);
+	}
 	while (42)
 	{
 		line = readline("> ");
@@ -49,23 +57,30 @@ static int	get_heredoc_input(int fd, char *filename, const char *delimiter)
 		free(line);
 	}
 	close(fd);
-	fd = open(filename, O_RDONLY);
-	unlink(filename);
-	untrack_pointer(filename);
-	return (fd);
+	exit(0);
 }
 
 int	handle_heredoc(const char *delimiter)
 {
-	int		fd;
-	char	*filename;
+	char		*filename;
+	pid_t		pid;
+	t_command	*cmd;
+	int			fd;
 
+	cmd = get_cmd_context(NULL);
 	filename = get_heredoc_filename();
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0)
+	pid = fork();
+	if (pid == 0)
+		heredoc_child(filename, delimiter);
+	waitpid(pid, &cmd->status, 0);
+	if (WIFEXITED(cmd->status) && WEXITSTATUS(cmd->status) == 130)
 	{
-		perror("open error");
+		unlink(filename);
+		untrack_pointer(filename);
 		return (-1);
 	}
-	return (get_heredoc_input(fd, filename, delimiter));
+	fd = open(filename, O_RDONLY);
+	unlink(filename);
+	untrack_pointer(filename);
+	return (fd);
 }

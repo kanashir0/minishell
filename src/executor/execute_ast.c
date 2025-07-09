@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/05 20:05:10 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:47:42 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,19 @@ int	execute_redir(t_node *node, int input_fd, int output_fd)
 int	execute_pipe(t_node *node, int input_fd, int output_fd)
 {
 	int		pipefd[2];
-	pid_t	left_pid;
-	pid_t	right_pid;
+	pid_t	pid_arr[2];
 
 	pipe(pipefd);
-	left_pid = fork();
-	if (left_pid == 0)
+	pid_arr[0] = fork();
+	if (pid_arr[0] == 0)
 	{
 		close(pipefd[0]);
 		execute_node(node->left, input_fd, pipefd[1]);
 		close(pipefd[1]);
 		exit(0);
 	}
-	right_pid = fork();
-	if (right_pid == 0)
+	pid_arr[1] = fork();
+	if (pid_arr[1] == 0)
 	{
 		close(pipefd[1]);
 		execute_node(node->right, pipefd[0], output_fd);
@@ -73,8 +72,8 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 	}
 	close(pipefd[0]);
 	close(pipefd[1]);
-	waitpid(left_pid, NULL, 0);
-	waitpid(right_pid, NULL, 0);
+	waitpid(pid_arr[0], NULL, 0);
+	waitpid(pid_arr[1], NULL, 0);
 	return (0);
 }
 

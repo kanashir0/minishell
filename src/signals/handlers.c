@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handlers.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:41:34 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/21 16:21:22 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:24:33 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,13 @@ void	sigint_handler(int signum)
 		rl_on_new_line();
 		rl_redisplay();
 		cmd->signal = SIGINT;
+	}
+}
+
+void	heredoc_sigint_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		exit(128 + SIGINT);
 	}
 }

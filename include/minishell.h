@@ -94,6 +94,7 @@ int			ft_isspace(int c);
 void		setup_signals(void);
 void		sigint_handler(int signum);
 void		process_signals(int pid);
+void		heredoc_sigint_handler(int signum);
 
 // Built-ins
 int			echo(char **args);
