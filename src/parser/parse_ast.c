@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 16:31:16 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/22 14:56:17 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/10 20:01:43 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ t_node	*parse_word(t_token **tokens)
 		return (NULL);
 	}
 	while (match_token(tokens, REDIR_OUT_TOKEN)
-		|| match_token(tokens, REDIR_IN_TOKEN))
+		|| match_token(tokens, REDIR_IN_TOKEN)
+		|| match_token(tokens, APPEND_TOKEN)
+		|| match_token(tokens, HEREDOC_TOKEN))
 	{
 		redir_type = consume_token(tokens)->type;
 		if (!match_token(tokens, WORD_TOKEN))

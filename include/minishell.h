@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/10 19:04:16 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:58:08 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,8 @@ int			execute_node(t_node *node, int input_fd, int output_fd);
 int			execute_ast(t_node *root);
 int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
 void		close_fd(int input_fd, int output_fd);
+void	pipe_child_left(t_node *node, int fd[2], int in, int out);
+void	pipe_child_right(t_node *node, int fd[2], int in, int out);
 
 // Expansion
 void		expand(t_node *node);
