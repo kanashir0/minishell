@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/09 14:41:33 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:04:16 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,5 +153,6 @@ t_node		*new_node(t_node_type n_type, t_node *left, t_node *right);
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);
 void		syntax_error_unclosed_quote(char quote);
+int			waitpid_status(int pid[2]);
 
 #endif

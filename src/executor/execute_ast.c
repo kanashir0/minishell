@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/05 20:05:10 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:03:57 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,33 +51,40 @@ int	execute_redir(t_node *node, int input_fd, int output_fd)
 int	execute_pipe(t_node *node, int input_fd, int output_fd)
 {
 	int		pipefd[2];
-	pid_t	left_pid;
-	pid_t	right_pid;
+	pid_t	pid[2];
+	int		status;
 
 	pipe(pipefd);
-	left_pid = fork();
-	if (left_pid == 0)
+	pid[0] = fork();
+	if (pid[0] < 0)
+		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
+	process_signals(pid[0]);
+	if (pid[0] == 0)
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
-		execute_node(node->left, input_fd, pipefd[1]);
+		status = execute_node(node->left, input_fd, pipefd[1]);
 		close(pipefd[1]);
-		exit(0);
+		exit(status);
 	}
-	right_pid = fork();
-	if (right_pid == 0)
+	pid[1] = fork();
+	if (pid[1] < 0)
+		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
+	process_signals(pid[1]);
+	if (pid[1] == 0)
 	{
 		close(pipefd[1]);
 		dup2(pipefd[0], STDIN_FILENO);
-		execute_node(node->right, pipefd[0], output_fd);
+		status = execute_node(node->right, pipefd[0], output_fd);
 		close(pipefd[0]);
-		exit(0);
+		exit(status);
 	}
 	close(pipefd[0]);
 	close(pipefd[1]);
-	waitpid(left_pid, NULL, 0);
-	waitpid(right_pid, NULL, 0);
-	return (0);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	status = waitpid_status(pid);
+	return (status);
 }
 
 int	execute_node(t_node *node, int input_fd, int output_fd)

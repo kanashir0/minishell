@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/04 16:37:12 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/10 17:02:43 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char
 
 int	process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid)
 {
+	int	sig;
 	if (input_fd != STDIN_FILENO)
 		close(input_fd);
 	if (output_fd != STDOUT_FILENO)
@@ -99,10 +100,12 @@ int	process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid)
 	waitpid(pid, &cmd->status, 0);
 	if (WIFEXITED(cmd->status))
 		cmd->status = WEXITSTATUS(cmd->status);
-	else if (WIFSIGNALED(cmd->status) && WTERMSIG(cmd->status) ==  SIGINT)
+	else if (WIFSIGNALED(cmd->status))
 	{
-		ft_putendl_fd("Quit (core dumped)", STDOUT_FILENO);
-		cmd->status = 128 + WTERMSIG(cmd->status);
+		sig = WTERMSIG(cmd->status);
+		if (sig == SIGQUIT)
+			ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
+		cmd->status = 128 + sig;
 	}
 	return (cmd->status);
 }
