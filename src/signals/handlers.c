@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:41:34 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/09 16:24:33 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:04:49 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ void	heredoc_sigint_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		exit(128 + SIGINT);
+		ft_putendl_fd("", STDOUT_FILENO);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		exit(130);
 	}
 }

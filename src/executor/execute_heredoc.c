@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:00:00 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/09 16:25:32 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:01:53 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,12 @@ int	handle_heredoc(const char *delimiter)
 
 	cmd = get_cmd_context(NULL);
 	filename = get_heredoc_filename();
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == 0)
 		heredoc_child(filename, delimiter);
 	waitpid(pid, &cmd->status, 0);
+	signal(SIGINT, sigint_handler);
 	if (WIFEXITED(cmd->status) && WEXITSTATUS(cmd->status) == 130)
 	{
 		unlink(filename);

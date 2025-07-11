@@ -5,4 +5,4 @@ Minishell
 * Append não funciona
 * Adicionar Signals do PIPE
 
-* leak: cat output.txt | grep teste
+* cat << EOF | grep hello
