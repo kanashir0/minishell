@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:41:34 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/06/21 16:21:22 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/11 19:00:05 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,15 @@ void	sigint_handler(int signum)
 	cmd = get_cmd_context(NULL);
 	if (signum == SIGINT)
 	{
-		ft_putendl_fd("", STDOUT_FILENO);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-		cmd->signal = SIGINT;
+		if (cmd->executing == 0)
+		{
+			ft_putendl_fd("", STDOUT_FILENO);
+			rl_replace_line("", 0);
+			rl_on_new_line();
+			rl_redisplay();
+		}
+		else
+			ft_putendl_fd("", STDOUT_FILENO);
+		cmd->status = 128 + SIGINT;
 	}
 }

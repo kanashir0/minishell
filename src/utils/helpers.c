@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:25:40 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/10 20:47:23 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/11 18:17:00 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,24 @@ void	syntax_error_unclosed_quote(char quote)
 
 int	waitpid_status(int pid[2])
 {
-	int	status;
+	int			status;
+	int			sig;
+	t_command	*cmd;
+
 
 	waitpid(pid[0], NULL, 0);
 	waitpid(pid[1], &status, 0);
-
-	if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
+	cmd = get_cmd_context(NULL);
 	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (1);
+		cmd->status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGQUIT && __WCOREDUMP(status))
+			ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
+		cmd->status = 128 + sig;
+	}
+	else
+		cmd->status = 1;
+	return (cmd->status);
 }

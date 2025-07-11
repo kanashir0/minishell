@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/10 20:49:51 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/11 18:18:31 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 {
 	int			pipefd[2];
 	pid_t		pid[2];
-	t_command	*cmd;
+	int			status;
 
 	pipe(pipefd);
 	pid[0] = fork();
@@ -71,9 +71,8 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 	close(pipefd[1]);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	cmd = get_cmd_context(NULL);
-	cmd->status = waitpid_status(pid);
-	return (cmd->status);
+	status = waitpid_status(pid);
+	return (status);
 }
 
 int	execute_node(t_node *node, int input_fd, int output_fd)
@@ -92,5 +91,11 @@ int	execute_node(t_node *node, int input_fd, int output_fd)
 
 int	execute_ast(t_node *root)
 {
-	return (execute_node(root, STDIN_FILENO, STDOUT_FILENO));
+	t_command	*cmd;
+
+	cmd = get_cmd_context(NULL);
+	cmd->executing = 1;
+	cmd->status = execute_node(root, STDIN_FILENO, STDOUT_FILENO);
+	cmd->executing = 0;
+	return (cmd->status);
 }

@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/10 19:58:08 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/11 19:00:10 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ typedef struct s_command
 	char	*input;
 	char	*command;
 	char	**args;
-	int		signal;
 	int		status;
+	int		executing;
 	t_env	*env_list;
 	t_token	**tokens;
 }			t_command;
