@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/09 12:49:06 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/11 19:13:55 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,17 @@ typedef struct s_command
 	char	*input;
 	char	*command;
 	char	**args;
-	int		signal;
 	int		status;
+	int		executing;
 	t_env	*env_list;
 	t_token	**tokens;
 }			t_command;
 
-// Input data
+// Input
 void		read_input(t_command *cmd);
 int			is_empty_input(char *input);
 int			ft_isspace(int c);
+int			check_input(char *input, int *len);
 
 // Signals
 void		setup_signals(void);
@@ -124,6 +125,8 @@ int			execute_ast(t_node *root);
 int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
 void		close_fd(int input_fd, int output_fd);
 int			handle_heredoc(const char *delimiter);
+void		pipe_child_left(t_node *node, int fd[2], int in, int out);
+void		pipe_child_right(t_node *node, int fd[2], int in, int out);
 
 // Expansion
 void		expand(t_node *node);
@@ -145,6 +148,7 @@ void 		update_under(t_command *cmd, char *new_value);
 t_token		**tokenizer(char *input);
 int			match_token(t_token **tokens, t_token_type t_type);
 t_token		*consume_token(t_token **tokens);
+void		free_token_list(t_token **tokens);
 
 // Parser
 t_node		*generate_ast(t_token **tokens);
@@ -153,5 +157,7 @@ void		free_ast(t_node *node);
 
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);
+void		syntax_error_unclosed_quote(char quote);
+int			waitpid_status(int pid[2]);
 
 #endif

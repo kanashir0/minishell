@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/09 17:23:41 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/11 19:14:32 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,34 +50,29 @@ int	execute_redir(t_node *node, int input_fd, int output_fd)
 
 int	execute_pipe(t_node *node, int input_fd, int output_fd)
 {
-	int		pipefd[2];
-	pid_t	left_pid;
-	pid_t	right_pid;
+	int			pipefd[2];
+	pid_t		pid[2];
+	int			status;
 
 	pipe(pipefd);
-	left_pid = fork();
-	if (left_pid == 0)
-	{
-		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
-		execute_node(node->left, input_fd, pipefd[1]);
-		close(pipefd[1]);
-		exit(0);
-	}
-	right_pid = fork();
-	if (right_pid == 0)
-	{
-		close(pipefd[1]);
-		dup2(pipefd[0], STDIN_FILENO);
-		execute_node(node->right, pipefd[0], output_fd);
-		close(pipefd[0]);
-		exit(0);
-	}
+	pid[0] = fork();
+	if (pid[0] < 0)
+		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
+	process_signals(pid[0]);
+	if (pid[0] == 0)
+		pipe_child_left(node->left, pipefd, input_fd, pipefd[1]);
+	pid[1] = fork();
+	if (pid[1] < 0)
+		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
+	process_signals(pid[1]);
+	if (pid[1] == 0)
+		pipe_child_right(node->right, pipefd, pipefd[0], output_fd);
 	close(pipefd[0]);
 	close(pipefd[1]);
-	waitpid(left_pid, NULL, 0);
-	waitpid(right_pid, NULL, 0);
-	return (0);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	status = waitpid_status(pid);
+	return (status);
 }
 
 int	execute_node(t_node *node, int input_fd, int output_fd)
@@ -96,5 +91,11 @@ int	execute_node(t_node *node, int input_fd, int output_fd)
 
 int	execute_ast(t_node *root)
 {
-	return (execute_node(root, STDIN_FILENO, STDOUT_FILENO));
+	t_command	*cmd;
+
+	cmd = get_cmd_context(NULL);
+	cmd->executing = 1;
+	cmd->status = execute_node(root, STDIN_FILENO, STDOUT_FILENO);
+	cmd->executing = 0;
+	return (cmd->status);
 }

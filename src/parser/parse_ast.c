@@ -6,7 +6,7 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 16:31:16 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/09 12:23:34 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/11 19:14:34 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ t_node	*parse_word(t_token **tokens)
 	}
 	while (match_token(tokens, REDIR_OUT_TOKEN)
 		|| match_token(tokens, REDIR_IN_TOKEN)
-		|| match_token(tokens, HEREDOC_TOKEN)
-		|| match_token(tokens, APPEND_TOKEN))
+		|| match_token(tokens, APPEND_TOKEN)
+		|| match_token(tokens, HEREDOC_TOKEN))
 	{
 		redir_type = consume_token(tokens)->type;
 		if (!match_token(tokens, WORD_TOKEN))

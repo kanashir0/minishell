@@ -6,16 +6,11 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/09 12:47:43 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/11 19:14:08 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-void	gambiarra(t_command *cmd)
-{
-	cmd->args = ft_split(cmd->input, ' ');
-}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -33,6 +28,12 @@ int	main(int ac, char **av, char **envp)
 		if (!is_empty_input(cmd->input))
 		{
 			cmd->tokens = tokenizer(cmd->input);
+			if (!cmd->tokens)
+			{
+				free(cmd->input);
+				cmd->input = NULL;
+				continue ;
+			}
 			ast = generate_ast(cmd->tokens);
 			expand(ast);
 			execute_ast(ast);

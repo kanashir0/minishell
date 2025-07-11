@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/04 10:38:22 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:24:14 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,19 @@ static void	double_quoted(char *input, int *i, char **res, t_env *ev, int status
 	(*i)++;
 	while (input[*i] && input[*i] != '"')
 	{
-		tmp = handle_dollar(input, i, ev, status);
-		append_and_free(res, tmp);
+		if (input[*i] == '$')
+		{
+			tmp = handle_dollar(input, i, ev, status);
+			append_and_free(res, tmp);
+		}
+		else
+		{
+			tmp = ft_substr(input, *i, 1);
+			append_and_free(res, tmp);
+			(*i)++;
+		}
 	}
-	if (input[*i] == '"')
+	if (input[*i] == '\"')
 		(*i)++;
 }
 
