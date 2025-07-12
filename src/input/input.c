@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/09 15:52:33 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 14:30:12 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ void	read_input(t_command *cmd)
 	// TODO validação input
 	if (!cmd->input)
 	{
-		ft_putstr_fd("exit\n", 1);
+		ft_putstr_fd("exit\n", STDOUT_FILENO);
 		ft_clear_mem();
-		exit(EXIT_FAILURE);
+		exit(cmd->status);
 	}
 	if (cmd->input)
 		add_history(cmd->input);
