@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 20:05:00 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/01 18:45:23 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:41:49 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	env(char **args, t_command *cmd)
 	node = cmd->env_list;
 	while (node)
 	{
-		printf("%s=%s\n", node->key, node->value);
+		ft_printf_fd(STDOUT_FILENO, "%s=%s\n", node->key, node->value);
 		node = node->next;
 	}
 	return (0);

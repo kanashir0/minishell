@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:31:00 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/25 14:43:54 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 16:13:38 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ int	echo(char **args)
 		newline = 0;
 	while (args[i])
 	{
-		printf("%s", args[i]);
+		ft_printf_fd(STDOUT_FILENO, "%s", args[i]);
 		if (args[i + 1])
-			printf(" ");
+			ft_printf_fd(STDOUT_FILENO, " ");
 		i++;
 	}
 	if (newline)
-		printf("\n");
+		ft_printf_fd(STDOUT_FILENO, "\n");
 	return (0);
 }

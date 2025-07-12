@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:58:40 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/04 10:28:59 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:48:28 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	error_handler(char *msg)
 {
-	ft_putstr_fd(msg, 2);
+	ft_printf_fd(STDERR_FILENO, msg);
 	ft_clear_mem();
 	exit(EXIT_FAILURE);
 }
@@ -22,16 +22,16 @@ int	print_cmd_error(char *command, int res)
 {
 	if (res == 0)
 	{
-		ft_putstr_fd(command, 2);
-		return (ft_putstr_fd(": command not found\n", 2), 127);
+		ft_printf_fd(STDERR_FILENO, command);
+		return (ft_printf_fd(STDERR_FILENO, ": command not found\n"), 127);
 	}
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(command, 2);
+	ft_printf_fd(STDERR_FILENO, "minishell: ");
+	ft_printf_fd(STDERR_FILENO, command);
 	if (res == -1)
-		return (ft_putstr_fd(": Permission denied\n", 2), 126);
+		return (ft_printf_fd(STDERR_FILENO, ": Permission denied\n"), 126);
 	if (res == -2)
-		return (ft_putstr_fd(": No such file or directory\n", 2), 127);
+		return (ft_printf_fd(STDERR_FILENO, ": No such file or directory\n"), 127);
 	if (res == -3)
-		return (ft_putstr_fd(": Is a directory\n", 2), 126);
+		return (ft_printf_fd(STDERR_FILENO, ": Is a directory\n"), 126);
 	return (1);
 }

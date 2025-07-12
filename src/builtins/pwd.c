@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 15:41:11 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/05/29 15:44:13 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:44:54 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	pwd(t_command *cmd)
 	tmp = getcwd(NULL, 0);
 	if (tmp)
 	{
-		printf("%s\n", tmp);
+		ft_printf_fd(STDOUT_FILENO, "%s\n", tmp);
 		free(tmp);
 		cmd->status = 0;
 	}

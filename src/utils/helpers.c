@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:25:40 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/11 18:17:00 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:49:07 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ char	*concatenate(char *s1, char *s2, char *s3)
 
 void	syntax_error_unclosed_quote(char quote)
 {
-	ft_putstr_fd("syntax error: unclosed quote ", 2);
-	ft_putchar_fd(quote, 2);
-	ft_putstr_fd("\n", 2);
+	ft_printf_fd(STDERR_FILENO, "syntax error: unclosed quote ");
+	ft_putchar_fd(quote, STDERR_FILENO);
+	ft_printf_fd(STDERR_FILENO, "\n");
 	get_cmd_context(NULL)->status = 2;
 }
 

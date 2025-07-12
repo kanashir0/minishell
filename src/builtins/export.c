@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/05 19:29:14 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:44:31 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ int	print_env(t_env **environ)
 			i++;
 			continue ;
 		}
-		printf("declare -x %s", environ[i]->key);
+		ft_printf_fd(STDOUT_FILENO, "declare -x %s", environ[i]->key);
 		if (environ[i]->value)
-			printf("=\"%s\"", environ[i]->value);
-		printf("\n");
+			ft_printf_fd(STDOUT_FILENO, "=\"%s\"", environ[i]->value);
+		ft_printf_fd(STDOUT_FILENO, "\n");
 		i++;
 	}
 	return (SUCCESS);
@@ -99,7 +99,7 @@ int	export(char **args, t_command *cmd)
 	{
 		if (!is_valid_key(args[i]))
 		{
-			printf("minishell: export: `%s': not a valid identifier\n", args[i]);
+			ft_printf_fd(STDERR_FILENO, "minishell: export: `%s': not a valid identifier\n", args[i]);
 			status = FAILURE;
 		}
 		else

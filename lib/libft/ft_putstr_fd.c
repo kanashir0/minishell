@@ -6,18 +6,23 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 10:48:16 by cbrito-s          #+#    #+#             */
-/*   Updated: 2024/10/23 11:57:03 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 16:11:07 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putstr_fd(char *s, int fd)
+int	ft_putstr_fd(char *s, int fd)
 {
-	if (*s != '\0')
+	int	i;
+
+	if (!s)
+		return (0);
+	i = 0;
+	while (s[i] != '\0')
 	{
-		ft_putchar_fd(*s, fd);
-		s++;
-		ft_putstr_fd(s, fd);
+		ft_putchar_fd(s[i], fd);
+		i++;
 	}
+	return (i);
 }

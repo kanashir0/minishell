@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/11 18:13:20 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 16:33:03 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char
 		ft_free_matrix(environ);
 		exit(1);
 	}
-	printf("minishell: %s: could not execute command\n", command);
+	ft_printf_fd(STDERR_FILENO, "minishell: %s: could not execute command\n", command);
 	exit(-1);
 }
 
