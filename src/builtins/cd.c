@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 17:32:07 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/25 14:03:23 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/12 14:27:08 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,23 +56,23 @@ static int	pwd_oldpwd(t_env *env_list)
 
 int	cd(char **args, t_command *cmd)
 {
-	int	path;
+	int	status;
 	int	flag;
 
 	flag = find_flag(args);
 	if (flag && !(args[1][0] != '-'))
 		return (printf("minishell: cd: %s: invalid option\n", args[flag]), 2);
 	if (!args[1] || (args[1][0] == '~' && args[1][1] == '\0'))
-		path = chdir(getenv("HOME"));
+		status = chdir(get_env(cmd->env_list, "HOME")->value);
 	else if ((args[1][0] == '-' && args[1][1] == '\0'))
-		path = chdir(get_env(cmd->env_list, "OLDPWD")->value);
+		status = chdir(get_env(cmd->env_list, "OLDPWD")->value);
 	else if (args[2] && ft_strlen(args[2]) > 0)
 		return (ft_putstr_fd("minishell: cd: too many arguments\n", 2), 1);
 	else
-		path = chdir(args[1]);
-	if (!path)
-		path = pwd_oldpwd(cmd->env_list);
+		status = chdir(args[1]);
+	if (!status)
+		status = pwd_oldpwd(cmd->env_list);
 	else
 		return (printf("minishell: cd: %s: No such file or directory\n", args[1]), 1);
-	return (path);
+	return (status);
 }
