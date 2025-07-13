@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 15:32:44 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:12:53 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,10 @@ int	main(int ac, char **av, char **envp)
 			}
 			expand_tokens(cmd->tokens, cmd->env_list, cmd->status);
 			ast = generate_ast(cmd->tokens);
+			preprocess_heredocs(ast);
 			execute_ast(ast);
 			free_ast(ast);
+			cleanup_heredocs(cmd);
 		}
 	}
 	ft_clear_mem();

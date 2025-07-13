@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 15:33:41 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:12:16 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ typedef struct s_command
 	int		executing;
 	t_env	*env_list;
 	t_token	**tokens;
+	char	**heredoc_files;
 }			t_command;
 
 // Input
@@ -124,7 +125,7 @@ int			execute_node(t_node *node, int input_fd, int output_fd);
 int			execute_ast(t_node *root);
 int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
 void		close_fd(int input_fd, int output_fd);
-int			handle_heredoc(const char *delimiter);
+char		*handle_heredoc(const char *delimiter);
 void		pipe_child_left(t_node *node, int fd[2], int in, int out);
 void		pipe_child_right(t_node *node, int fd[2], int in, int out);
 int			process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid);
@@ -155,10 +156,13 @@ void		free_token_list(t_token **tokens);
 t_node		*generate_ast(t_token **tokens);
 t_node		*new_node(t_node_type n_type, t_node *left, t_node *right);
 void		free_ast(t_node *node);
+void		preprocess_heredocs(t_node *node);
 
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);
 void		syntax_error_unclosed_quote(char quote);
 int			waitpid_status(int pid[2]);
+void		cleanup_heredocs(t_command *cmd);
+void		add_heredoc_file(t_command *cmd, char *filename);
 
 #endif

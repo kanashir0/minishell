@@ -63,8 +63,6 @@ int	open_redir_file(t_token_type type, char *filename)
 		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (type == REDIR_IN_TOKEN)
 		fd = open(filename, O_RDONLY);
-	else if (type == HEREDOC_TOKEN)
-		return (handle_heredoc(filename));
 	else
 		return (-1);
 	if (fd < 0)

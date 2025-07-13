@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:00:00 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/12 14:02:47 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/13 17:46:29 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	heredoc_child(char *filename, const char *delimiter)
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
 	{
-		perror("open error");
+		print_cmd_error(filename, -2);
 		exit(1);
 	}
 	while (42)
@@ -61,12 +61,11 @@ static int	heredoc_child(char *filename, const char *delimiter)
 	exit(0);
 }
 
-int	handle_heredoc(const char *delimiter)
+char	*handle_heredoc(const char *delimiter)
 {
 	char		*filename;
 	pid_t		pid;
 	t_command	*cmd;
-	int			fd;
 
 	cmd = get_cmd_context(NULL);
 	filename = get_heredoc_filename();
@@ -80,10 +79,7 @@ int	handle_heredoc(const char *delimiter)
 	{
 		unlink(filename);
 		untrack_pointer(filename);
-		return (-1);
+		return (NULL);
 	}
-	fd = open(filename, O_RDONLY);
-	unlink(filename);
-	untrack_pointer(filename);
-	return (fd);
+	return (filename);
 }
