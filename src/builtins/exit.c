@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:54:14 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 15:43:02 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 14:19:10 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	builtin_exit(char **args, t_command *cmd)
 {
 	long	status_code;
 
-	ft_printf_fd(STDOUT_FILENO, "exit\n");
+	ft_printf_fd(STDOUT_FILENO, "%s\n", args[0]);
 	if (args[1] == NULL)
 	{
 		ft_clear_mem();
@@ -39,13 +39,13 @@ int	builtin_exit(char **args, t_command *cmd)
 	}
 	if (!is_numeric(args[1]))
 	{
-		ft_printf_fd(STDOUT_FILENO, "exit: %s: numeric argument required\n", args[1]);
+		ft_printf_fd(STDERR_FILENO, "%s: %s: numeric argument required\n", args[0], args[1]);
 		ft_clear_mem();
 		exit(2);
 	}
 	if (args[2])
 	{
-		ft_printf_fd(STDOUT_FILENO, "exit: too many arguments\n");
+		ft_printf_fd(STDERR_FILENO, "%s: too many arguments\n", args[0]);
 		cmd->status = 1;
 		return (1);
 	}
