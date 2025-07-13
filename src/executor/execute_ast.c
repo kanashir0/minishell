@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/11 19:14:32 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/13 14:09:41 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,32 @@ int execute_command(t_node *node, int input_fd, int output_fd)
 
 int	execute_redir(t_node *node, int input_fd, int output_fd)
 {
-	int	new_fd;
+	int			new_fd;
+	pid_t		pid;
+	t_command	*cmd;
 
-	new_fd = open_redir_file(node->redir_type, node->redir_file);
-	if (new_fd < 0)
-		return (1);
-	if (node->redir_type == REDIR_IN_TOKEN || node->redir_type == HEREDOC_TOKEN)
-		return (execute_node(node->left, new_fd, output_fd));
-	else if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
-		return (execute_node(node->left, input_fd, new_fd));
-	return (1);
+	pid = fork();
+	if (pid == 0)
+	{
+		new_fd = open_redir_file(node->redir_type, node->redir_file);
+		if (new_fd < 0)
+			exit (1);
+		if (node->redir_type == REDIR_IN_TOKEN || node->redir_type == HEREDOC_TOKEN)
+		{
+			if (dup2(new_fd, STDIN_FILENO) == -1)
+				error_handler("dup2 failed");
+		}
+		else if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
+		{
+			if (dup2(new_fd, STDOUT_FILENO) == -1)
+				error_handler("dup2 failed");
+		}
+		close(new_fd);
+		exit (execute_node(node->left, STDIN_FILENO, STDOUT_FILENO));
+	}
+	cmd = get_cmd_context(NULL);
+	cmd->status = process_parent(input_fd, output_fd, cmd, pid);
+	return (cmd->status);
 }
 
 int	execute_pipe(t_node *node, int input_fd, int output_fd)

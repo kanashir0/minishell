@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/11 19:13:55 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/13 14:10:14 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ void		close_fd(int input_fd, int output_fd);
 int			handle_heredoc(const char *delimiter);
 void		pipe_child_left(t_node *node, int fd[2], int in, int out);
 void		pipe_child_right(t_node *node, int fd[2], int in, int out);
+int			process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid);
 
 // Expansion
 void		expand(t_node *node);
