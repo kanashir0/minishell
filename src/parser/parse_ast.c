@@ -3,20 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   parse_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gkana <gkana@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 16:31:16 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/13 18:42:43 by gkana            ###   ########.fr       */
+/*   Updated: 2025/07/13 17:24:14 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
+static void	append_redirection(t_node **current_cmd_root,
+	t_node *cmd_node, t_node *redir_node)
+{
+	t_node	*last_redir;
+
+	if ((*current_cmd_root)->type != REDIR_NODE)
+	{
+		redir_node->left = cmd_node;
+		*current_cmd_root = redir_node;
+	}
+	else
+	{
+		last_redir = *current_cmd_root;
+		while (last_redir->left && last_redir->left->type == REDIR_NODE)
+			last_redir = last_redir->left;
+		redir_node->left = last_redir->left;
+		last_redir->left = redir_node;
+	}
+}
+
+static int	handle_redir_token(t_token **tokens,
+	t_node **current_cmd_root, t_node *cmd_node)
+{
+	t_node	*redir_node;
+
+	redir_node = new_node(REDIR_NODE, NULL, NULL);
+	redir_node->redir_type = consume_token(tokens)->type;
+	if (!match_token(tokens, WORD_TOKEN))
+	{
+		free_ast(*current_cmd_root);
+		untrack_pointer(redir_node);
+		return (-1);
+	}
+	redir_node->redir_file = ft_strdup(consume_token(tokens)->value);
+	append_redirection(current_cmd_root, cmd_node, redir_node);
+	return (0);
+}
+
 static t_node	*parse_command(t_token **tokens)
 {
 	t_node			*cmd_node;
-	t_node			*redir_node;
-	t_token_type	redir_type;
 	t_node			*current_cmd_root;
 	int				argc;
 
@@ -28,36 +64,8 @@ static t_node	*parse_command(t_token **tokens)
 	{
 		if ((*tokens)->type == WORD_TOKEN)
 			cmd_node->argv[argc++] = ft_strdup(consume_token(tokens)->value);
-		else if ((*tokens)->type == REDIR_IN_TOKEN
-			|| (*tokens)->type == REDIR_OUT_TOKEN
-			|| (*tokens)->type == APPEND_TOKEN
-			|| (*tokens)->type == HEREDOC_TOKEN)
-		{
-			redir_type = consume_token(tokens)->type;
-			if (!match_token(tokens, WORD_TOKEN))
-			{
-				cmd_node->argv[argc] = NULL;
-				free_ast(current_cmd_root);
-				return (NULL);
-			}
-			redir_node = new_node(REDIR_NODE, NULL, NULL);
-			redir_node->redir_file = ft_strdup(consume_token(tokens)->value);
-			redir_node->redir_type = redir_type;
-			if (current_cmd_root->type != REDIR_NODE)
-				redir_node->left = cmd_node;
-			else
-			{
-				t_node *last_redir = current_cmd_root;
-				while(last_redir->left->type == REDIR_NODE)
-					last_redir = last_redir->left;
-				redir_node->left = last_redir->left;
-				last_redir->left = redir_node;
-				continue ;
-			}
-			current_cmd_root = redir_node;
-		}
-		else
-			break ;
+		else if (handle_redir_token(tokens, &current_cmd_root, cmd_node) == -1)
+			return (NULL);
 	}
 	cmd_node->argv[argc] = NULL;
 	if (argc == 0 && current_cmd_root == cmd_node)
