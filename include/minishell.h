@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 14:10:14 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 15:33:41 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int			count_env_arr(t_env **environ);
 char		**environ_list(t_env *env_list, int count);
 
 // Executor
-int			open_redir_file(t_token_type type, const char *filename);
+int			open_redir_file(t_token_type type, char *filename);
 int			execute_node(t_node *node, int input_fd, int output_fd);
 int			execute_ast(t_node *root);
 int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
@@ -130,11 +130,11 @@ void		pipe_child_right(t_node *node, int fd[2], int in, int out);
 int			process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid);
 
 // Expansion
-void		expand(t_node *node);
 void		append_and_free(char **res, char *tmp);
 char		*extract_env_value(char *input, int *i, t_env *environ);
 char		*handle_dollar_special_cases(char c, int *i, int status);
 char		*handle_dollar(char *input, int *i, t_env *ev, int status);
+void 		expand_tokens(t_token **tokens, t_env *env, int status);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/09 14:24:14 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 15:33:55 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,27 +77,44 @@ static char	*expand_string(char *input, t_env *environ, int status)
 	return (res);
 }
 
-void	expand(t_node *node)
+void	expand_tokens(t_token **tokens, t_env *env, int status)
 {
-	t_command	*cmd;
-	t_env		*environ;
-	int			index;
-	char		*new;
+	t_token	*cur = *tokens;
+	char	*expanded;
 
-	cmd = get_cmd_context(NULL);
-	environ = cmd->env_list;
-	if (!node)
-		return ;
-	if (node->type == WORD_NODE && node->argv)
+	while (cur)
 	{
-		index = 0;
-		while (node->argv[index])
+		if (cur->type == WORD_TOKEN && cur->value)
 		{
-			new = expand_string(node->argv[index], environ, cmd->status);
-			node->argv[index] = new;
-			index++;
+			expanded = expand_string(cur->value, env, status);
+			untrack_pointer(cur->value);   // libera a string antiga
+			cur->value = expanded;         // seta a nova
 		}
+		cur = cur->next;
 	}
-	expand(node->left);
-	expand(node->right);
 }
+
+// void	expand(t_node *node)
+// {
+// 	t_command	*cmd;
+// 	t_env		*environ;
+// 	int			index;
+// 	char		*new;
+
+// 	cmd = get_cmd_context(NULL);
+// 	environ = cmd->env_list;
+// 	if (!node)
+// 		return ;
+// 	if (node->type == WORD_NODE && node->argv)
+// 	{
+// 		index = 0;
+// 		while (node->argv[index])
+// 		{
+// 			new = expand_string(node->argv[index], environ, cmd->status);
+// 			node->argv[index] = new;
+// 			index++;
+// 		}
+// 	}
+// 	expand(node->left);
+// 	expand(node->right);
+// }

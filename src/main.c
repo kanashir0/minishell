@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 13:58:06 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/13 15:32:44 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ int	main(int ac, char **av, char **envp)
 				cmd->input = NULL;
 				continue ;
 			}
+			expand_tokens(cmd->tokens, cmd->env_list, cmd->status);
 			ast = generate_ast(cmd->tokens);
-			expand(ast);
 			execute_ast(ast);
 			free_ast(ast);
 		}

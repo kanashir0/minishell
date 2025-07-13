@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/12 14:07:21 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/13 15:28:30 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	close_fd(int input_fd, int output_fd)
 	}
 }
 
-int open_redir_file(t_token_type type, const char *filename)
+int	open_redir_file(t_token_type type, char *filename)
 {
 	int	fd;
 
@@ -68,7 +68,7 @@ int open_redir_file(t_token_type type, const char *filename)
 	else
 		return (-1);
 	if (fd < 0)
-		perror("open error");
+		print_cmd_error(filename, -2);
 	return (fd);
 }
 
