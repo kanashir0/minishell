@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gkana <gkana@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 16:31:16 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/13 18:03:14 by gkana            ###   ########.fr       */
+/*   Updated: 2025/07/13 18:42:43 by gkana            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,20 @@ static t_node	*parse_command(t_token **tokens)
 				free_ast(current_cmd_root);
 				return (NULL);
 			}
-			redir_node = new_node(REDIR_NODE, current_cmd_root, NULL);
+			redir_node = new_node(REDIR_NODE, NULL, NULL);
 			redir_node->redir_file = ft_strdup(consume_token(tokens)->value);
 			redir_node->redir_type = redir_type;
+			if (current_cmd_root->type != REDIR_NODE)
+				redir_node->left = cmd_node;
+			else
+			{
+				t_node *last_redir = current_cmd_root;
+				while(last_redir->left->type == REDIR_NODE)
+					last_redir = last_redir->left;
+				redir_node->left = last_redir->left;
+				last_redir->left = redir_node;
+				continue ;
+			}
 			current_cmd_root = redir_node;
 		}
 		else
