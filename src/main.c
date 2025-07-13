@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 15:32:44 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:06:54 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ int	main(int ac, char **av, char **envp)
 				continue ;
 			}
 			expand_tokens(cmd->tokens, cmd->env_list, cmd->status);
+			if (*(cmd->tokens) == NULL)
+			{
+				cmd->status = 0;
+				free(cmd->input);
+				cmd->input = NULL;
+				continue ;
+			}
 			ast = generate_ast(cmd->tokens);
 			execute_ast(ast);
 			free_ast(ast);

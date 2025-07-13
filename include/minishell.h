@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 15:33:41 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:10:53 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ t_token		**tokenizer(char *input);
 int			match_token(t_token **tokens, t_token_type t_type);
 t_token		*consume_token(t_token **tokens);
 void		free_token_list(t_token **tokens);
+void		remove_empty_token(t_token **tokens, t_token *curr, t_token *prev);
 
 // Parser
 t_node		*generate_ast(t_token **tokens);
