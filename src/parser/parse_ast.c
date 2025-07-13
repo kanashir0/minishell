@@ -6,62 +6,55 @@
 /*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 16:31:16 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/11 19:14:34 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:03:14 by gkana            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	**consume_words(t_token **tokens)
+static t_node	*parse_command(t_token **tokens)
 {
-	char	**argv;
-	int		count;
-
-	// supports up to 64 params/command
-	argv = ft_collect_mem(1, sizeof(char *) * 64);
-	count = 0;
-	while (*tokens && (*tokens)->type == WORD_TOKEN)
-	{
-		argv[count++] = ft_strdup((*tokens)->value);
-		consume_token(tokens);
-	}
-	argv[count] = '\0';
-	if (count == 0)
-		return (NULL);
-	return (argv);
-}
-
-t_node	*parse_word(t_token **tokens)
-{
-	t_node			*word;
-	t_node			*redir;
+	t_node			*cmd_node;
+	t_node			*redir_node;
 	t_token_type	redir_type;
+	t_node			*current_cmd_root;
+	int				argc;
 
-	word = new_node(WORD_NODE, NULL, NULL);
-	word->argv = consume_words(tokens);
-	if (!word->argv)
+	cmd_node = new_node(WORD_NODE, NULL, NULL);
+	cmd_node->argv = ft_collect_mem(1, sizeof(char *) * 64);
+	argc = 0;
+	current_cmd_root = cmd_node;
+	while (*tokens && (*tokens)->type != PIPE_TOKEN)
 	{
-		untrack_pointer(word);
+		if ((*tokens)->type == WORD_TOKEN)
+			cmd_node->argv[argc++] = ft_strdup(consume_token(tokens)->value);
+		else if ((*tokens)->type == REDIR_IN_TOKEN
+			|| (*tokens)->type == REDIR_OUT_TOKEN
+			|| (*tokens)->type == APPEND_TOKEN
+			|| (*tokens)->type == HEREDOC_TOKEN)
+		{
+			redir_type = consume_token(tokens)->type;
+			if (!match_token(tokens, WORD_TOKEN))
+			{
+				cmd_node->argv[argc] = NULL;
+				free_ast(current_cmd_root);
+				return (NULL);
+			}
+			redir_node = new_node(REDIR_NODE, current_cmd_root, NULL);
+			redir_node->redir_file = ft_strdup(consume_token(tokens)->value);
+			redir_node->redir_type = redir_type;
+			current_cmd_root = redir_node;
+		}
+		else
+			break ;
+	}
+	cmd_node->argv[argc] = NULL;
+	if (argc == 0 && current_cmd_root == cmd_node)
+	{
+		free_ast(cmd_node);
 		return (NULL);
 	}
-	while (match_token(tokens, REDIR_OUT_TOKEN)
-		|| match_token(tokens, REDIR_IN_TOKEN)
-		|| match_token(tokens, APPEND_TOKEN)
-		|| match_token(tokens, HEREDOC_TOKEN))
-	{
-		redir_type = consume_token(tokens)->type;
-		if (!match_token(tokens, WORD_TOKEN))
-		{
-			free_ast(word);
-			return (NULL);
-		}
-		redir = new_node(REDIR_NODE, word, NULL);
-		redir->redir_file = ft_strdup((*tokens)->value);
-		redir->redir_type = redir_type;
-		word = redir;
-		consume_token(tokens);
-	}
-	return (word);
+	return (current_cmd_root);
 }
 
 t_node	*parse_pipe(t_token **tokens)
@@ -70,13 +63,13 @@ t_node	*parse_pipe(t_token **tokens)
 	t_node	*right;
 	t_node	*pipe;
 
-	left = parse_word(tokens);
+	left = parse_command(tokens);
 	if (!left)
 		return (NULL);
 	while (match_token(tokens, PIPE_TOKEN))
 	{
 		consume_token(tokens);
-		right = parse_word(tokens);
+		right = parse_command(tokens);
 		if (!right)
 		{
 			free_ast(left);
