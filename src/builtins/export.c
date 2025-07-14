@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 15:44:31 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/14 11:06:13 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,23 @@ static int	print_export_list(t_env *env_list)
 static void	export_arg(t_command *cmd, char *arg)
 {
 	t_env	*node;
-	char	**kv;
+	char	*kv;
 	char	*key;
 	char	*val;
+	int		len;
 
-	kv = ft_split(arg, '=');
-	key = kv[0];
-	if (kv[1])
-		val = ft_strdup(kv[1]);
+	kv = ft_strchr(arg, '=');
+	if (kv)
+	{
+		len = ft_strlen(arg) - ft_strlen(kv);
+		key = ft_substr(arg, 0, len);
+		val = ft_strdup(&kv[1]);
+	}
 	else
+	{
+		key = arg;
 		val = NULL;
+	}
 	node = get_env(cmd->env_list, key);
 	if (node)
 	{

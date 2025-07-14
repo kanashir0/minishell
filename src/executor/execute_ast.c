@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/13 14:09:41 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/14 11:12:28 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	execute_redir(t_node *node, int input_fd, int output_fd)
 	int			new_fd;
 	pid_t		pid;
 	t_command	*cmd;
+	int			status;
 
 	pid = fork();
 	if (pid == 0)
@@ -57,7 +58,9 @@ int	execute_redir(t_node *node, int input_fd, int output_fd)
 				error_handler("dup2 failed");
 		}
 		close(new_fd);
-		exit (execute_node(node->left, STDIN_FILENO, STDOUT_FILENO));
+		status = execute_node(node->left, STDIN_FILENO, STDOUT_FILENO);
+		ft_clear_mem();
+		exit(status);
 	}
 	cmd = get_cmd_context(NULL);
 	cmd->status = process_parent(input_fd, output_fd, cmd, pid);
