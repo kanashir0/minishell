@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 15:33:55 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:10:33 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,42 +79,26 @@ static char	*expand_string(char *input, t_env *environ, int status)
 
 void	expand_tokens(t_token **tokens, t_env *env, int status)
 {
-	t_token	*cur = *tokens;
+	t_token	*curr;
+	t_token	*prev;
 	char	*expanded;
 
-	while (cur)
+	curr = *tokens;
+	prev = NULL;
+	while (curr)
 	{
-		if (cur->type == WORD_TOKEN && cur->value)
+		if (curr->type == WORD_TOKEN && curr->value)
 		{
-			expanded = expand_string(cur->value, env, status);
-			untrack_pointer(cur->value);   // libera a string antiga
-			cur->value = expanded;         // seta a nova
+			expanded = expand_string(curr->value, env, status);
+			untrack_pointer(curr->value);
+			curr->value = expanded;
+			if (curr->value[0] == '\0')
+			{
+				remove_empty_token(tokens, curr, prev);
+				continue ;
+			}
 		}
-		cur = cur->next;
+		prev = curr;
+		curr = curr->next;
 	}
 }
-
-// void	expand(t_node *node)
-// {
-// 	t_command	*cmd;
-// 	t_env		*environ;
-// 	int			index;
-// 	char		*new;
-
-// 	cmd = get_cmd_context(NULL);
-// 	environ = cmd->env_list;
-// 	if (!node)
-// 		return ;
-// 	if (node->type == WORD_NODE && node->argv)
-// 	{
-// 		index = 0;
-// 		while (node->argv[index])
-// 		{
-// 			new = expand_string(node->argv[index], environ, cmd->status);
-// 			node->argv[index] = new;
-// 			index++;
-// 		}
-// 	}
-// 	expand(node->left);
-// 	expand(node->right);
-// }
