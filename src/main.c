@@ -43,7 +43,12 @@ int	main(int ac, char **av, char **envp)
 				continue ;
 			}
 			ast = generate_ast(cmd->tokens);
-			preprocess_heredocs(ast);
+			if (preprocess_heredocs(ast) == -1)
+			{
+				free_ast(ast);
+				cleanup_heredocs(cmd);
+				continue ;
+			}
 			execute_ast(ast);
 			free_ast(ast);
 			cleanup_heredocs(cmd);
