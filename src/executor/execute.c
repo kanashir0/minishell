@@ -6,50 +6,36 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/13 15:28:30 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:50:08 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	pipe_child_left(t_node *node, int fd[2], int in, int out)
+void	pipe_child_left(t_node *node, int fd[2])
 {
 	int	status;
 
 	close(fd[0]);
-	if (dup2(out, STDOUT_FILENO) == -1)
+	if (dup2(fd[1], STDOUT_FILENO) == -1)
 		error_handler("Error: Failed to duplicate file descriptor");
-	status = execute_node(node, in, out);
-	close(out);
+	close(fd[1]);
+	status = execute_node(node);
 	ft_clear_mem();
 	exit(status);
 }
 
-void	pipe_child_right(t_node *node, int fd[2], int in, int out)
+void	pipe_child_right(t_node *node, int fd[2])
 {
 	int	status;
 
 	close(fd[1]);
-	if (dup2(in, STDIN_FILENO) == -1)
+	if (dup2(fd[0], STDIN_FILENO) == -1)
 		error_handler("Error: Failed to duplicate file descriptor");
-	status = execute_node(node, in, out);
-	close(in);
+	close(fd[0]);
+	status = execute_node(node);
 	ft_clear_mem();
 	exit(status);
-}
-
-void	close_fd(int input_fd, int output_fd)
-{
-	if (input_fd != STDIN_FILENO)
-	{
-		dup2(input_fd, STDIN_FILENO);
-		close(input_fd);
-	}
-	if (output_fd != STDOUT_FILENO)
-	{
-		dup2(output_fd, STDOUT_FILENO);
-		close(output_fd);
-	}
 }
 
 int	open_redir_file(t_token_type type, char *filename)

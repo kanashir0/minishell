@@ -6,13 +6,13 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/14 11:12:28 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:52:06 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int execute_command(t_node *node, int input_fd, int output_fd)
+int execute_command(t_node *node)
 {
 	t_command	*cmd;
 	char		**args;
@@ -24,22 +24,22 @@ int execute_command(t_node *node, int input_fd, int output_fd)
 	while (args[i])
 		i++;
 	if (i > 0)
+	{
 		update_under(cmd, args[i - 1]);
+		cmd->status = is_builtin(args, cmd);
+		if (cmd->status == -1)
+			cmd->status = exec_path(args, cmd);
+	}
 	else
-		update_under(cmd, args[0]);
-	cmd->status = is_builtin(args, cmd);
-	if (cmd->status == -1)
-		cmd->status = exec_path(args, input_fd, output_fd, cmd);
-
+		cmd->status = 0;
 	return (cmd->status);
 }
 
-int	execute_redir(t_node *node, int input_fd, int output_fd)
+int	execute_redir(t_node *node)
 {
 	int			new_fd;
 	pid_t		pid;
 	t_command	*cmd;
-	int			status;
 
 	pid = fork();
 	if (pid == 0)
@@ -58,16 +58,14 @@ int	execute_redir(t_node *node, int input_fd, int output_fd)
 				error_handler("dup2 failed");
 		}
 		close(new_fd);
-		status = execute_node(node->left, STDIN_FILENO, STDOUT_FILENO);
-		ft_clear_mem();
-		exit(status);
+		exit (execute_node(node->left));
 	}
 	cmd = get_cmd_context(NULL);
-	cmd->status = process_parent(input_fd, output_fd, cmd, pid);
+	cmd->status = process_parent(cmd, pid);
 	return (cmd->status);
 }
 
-int	execute_pipe(t_node *node, int input_fd, int output_fd)
+int	execute_pipe(t_node *node)
 {
 	int			pipefd[2];
 	pid_t		pid[2];
@@ -79,31 +77,29 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
 	process_signals(pid[0]);
 	if (pid[0] == 0)
-		pipe_child_left(node->left, pipefd, input_fd, pipefd[1]);
+		pipe_child_left(node->left, pipefd);
 	pid[1] = fork();
 	if (pid[1] < 0)
 		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
 	process_signals(pid[1]);
 	if (pid[1] == 0)
-		pipe_child_right(node->right, pipefd, pipefd[0], output_fd);
+		pipe_child_right(node->right, pipefd);
 	close(pipefd[0]);
 	close(pipefd[1]);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
 	status = waitpid_status(pid);
 	return (status);
 }
 
-int	execute_node(t_node *node, int input_fd, int output_fd)
+int	execute_node(t_node *node)
 {
 	if (!node)
 		return (1);
 	if (node->type == PIPE_NODE)
-		return (execute_pipe(node, input_fd, output_fd));
+		return (execute_pipe(node));
 	else if (node->type == REDIR_NODE)
-		return (execute_redir(node, input_fd, output_fd));
+		return (execute_redir(node));
 	else if (node->type == WORD_NODE)
-		return (execute_command(node, input_fd, output_fd));
+		return (execute_command(node));
 	else
 		return (1);
 }
@@ -114,7 +110,7 @@ int	execute_ast(t_node *root)
 
 	cmd = get_cmd_context(NULL);
 	cmd->executing = 1;
-	cmd->status = execute_node(root, STDIN_FILENO, STDOUT_FILENO);
+	cmd->status = execute_node(root);
 	cmd->executing = 0;
 	return (cmd->status);
 }

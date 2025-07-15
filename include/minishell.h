@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/14 14:41:35 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:10:55 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,14 +121,13 @@ char		**environ_list(t_env *env_list, int count);
 
 // Executor
 int			open_redir_file(t_token_type type, char *filename);
-int			execute_node(t_node *node, int input_fd, int output_fd);
+int			execute_node(t_node *node);
 int			execute_ast(t_node *root);
-int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
-void		close_fd(int input_fd, int output_fd);
+int			exec_path(char **args, t_command *cmd);
 char		*handle_heredoc(const char *delimiter);
-void		pipe_child_left(t_node *node, int fd[2], int in, int out);
-void		pipe_child_right(t_node *node, int fd[2], int in, int out);
-int			process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid);
+void		pipe_child_left(t_node *node, int fd[2]);
+void		pipe_child_right(t_node *node, int fd[2]);
+int			process_parent(t_command *cmd, pid_t pid);
 
 // Expansion
 void		append_and_free(char **res, char *tmp);

@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 16:33:03 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:07:57 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*get_command(t_command *cmd, char *command)
 	return (full_path);
 }
 
-int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char *command)
+int	process_child(char **args, t_command *cmd, char *command)
 {
 	struct stat	file;
 	char		**environ;
@@ -80,7 +80,6 @@ int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char
 	}
 	if (stat(command, &file) == 0)
 	{
-		close_fd(input_fd, output_fd);
 		execve(command, args, environ);
 		perror("exceve");
 		ft_free_matrix(environ);
@@ -90,13 +89,10 @@ int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char
 	exit(-1);
 }
 
-int	process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid)
+int	process_parent(t_command *cmd, pid_t pid)
 {
 	int	sig;
-	if (input_fd != STDIN_FILENO)
-		close(input_fd);
-	if (output_fd != STDOUT_FILENO)
-		close(output_fd);
+
 	waitpid(pid, &cmd->status, 0);
 	if (WIFEXITED(cmd->status))
 		cmd->status = WEXITSTATUS(cmd->status);
@@ -110,7 +106,7 @@ int	process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid)
 	return (cmd->status);
 }
 
-int	exec_path(char **args, int input_fd, int output_fd, t_command *cmd)
+int	exec_path(char **args, t_command *cmd)
 {
 	pid_t	pid;
 	char	*command;
@@ -131,9 +127,9 @@ int	exec_path(char **args, int input_fd, int output_fd, t_command *cmd)
 	if (pid < 0)
 		return (error_handler("Error: Failed to fork process\n"), 1);
 	if (pid == 0)
-		res = process_child(args, input_fd, output_fd, cmd, command);
+		res = process_child(args, cmd, command);
 	if (pid > 0)
-		res = process_parent(input_fd, output_fd, cmd, pid);
+		res = process_parent(cmd, pid);
 	untrack_pointer(command);
 	return (res);
 }
