@@ -12,22 +12,25 @@
 
 #include "../../include/minishell.h"
 
-void	preprocess_heredocs(t_node *node)
+int	preprocess_heredocs(t_node *node)
 {
 	char	*tmp_file;
 
 	if (!node)
-		return ;
+		return (0);
 	if (node->type == REDIR_NODE && node->redir_type == HEREDOC_TOKEN)
 	{
 		tmp_file = handle_heredoc(node->redir_file);
 		if (!tmp_file)
-			return ;
+			return (-1);
 		add_heredoc_file(get_cmd_context(NULL), tmp_file);
 		untrack_pointer(node->redir_file);
 		node->redir_file = tmp_file;
 		node->redir_type = REDIR_IN_TOKEN;
 	}
-	preprocess_heredocs(node->left);
-	preprocess_heredocs(node->right);
+	if (preprocess_heredocs(node->left) == -1)
+		return (-1);
+	if (preprocess_heredocs(node->right) == -1)
+		return (-1);
+	return (0);
 }

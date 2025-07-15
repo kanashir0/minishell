@@ -157,7 +157,7 @@ void		remove_empty_token(t_token **tokens, t_token *curr, t_token *prev);
 t_node		*generate_ast(t_token **tokens);
 t_node		*new_node(t_node_type n_type, t_node *left, t_node *right);
 void		free_ast(t_node *node);
-void		preprocess_heredocs(t_node *node);
+int		preprocess_heredocs(t_node *node);
 
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);

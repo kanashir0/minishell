@@ -71,6 +71,7 @@ char	*handle_heredoc(const char *delimiter)
 	char		*filename;
 	pid_t		pid;
 	t_command	*cmd;
+	int			status;
 
 	cmd = get_cmd_context(NULL);
 	filename = get_heredoc_filename();
@@ -78,10 +79,11 @@ char	*handle_heredoc(const char *delimiter)
 	pid = fork();
 	if (pid == 0)
 		heredoc_child(filename, delimiter);
-	waitpid(pid, &cmd->status, 0);
+	waitpid(pid, &status, 0);
 	signal(SIGINT, sigint_handler);
-	if (WIFEXITED(cmd->status) && WEXITSTATUS(cmd->status) == 130)
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
 	{
+		cmd->status = WEXITSTATUS(status);
 		unlink(filename);
 		untrack_pointer(filename);
 		return (NULL);
