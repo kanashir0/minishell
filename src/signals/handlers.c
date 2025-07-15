@@ -41,7 +41,9 @@ void	heredoc_sigint_handler(int signum)
 		cmd = get_cmd_context(NULL);
 		ft_putendl_fd("", STDOUT_FILENO);
 		cmd->status = 130;
-		rl_cleanup_after_signal();
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
 		close(STDIN_FILENO);
 	}
 }
