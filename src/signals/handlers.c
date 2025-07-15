@@ -34,11 +34,14 @@ void	sigint_handler(int signum)
 
 void	heredoc_sigint_handler(int signum)
 {
+	t_command	*cmd;
+
 	if (signum == SIGINT)
 	{
+		cmd = get_cmd_context(NULL);
 		ft_putendl_fd("", STDOUT_FILENO);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		exit(130);
+		cmd->status = 130;
+		rl_cleanup_after_signal();
+		close(STDIN_FILENO);
 	}
 }

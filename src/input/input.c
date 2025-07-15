@@ -21,7 +21,7 @@ void	read_input(t_command *cmd)
 	{
 		ft_printf_fd(STDOUT_FILENO, "exit\n");
 		ft_clear_mem();
-		exit(cmd->status);
+		exit(131);
 	}
 	if (cmd->input)
 		add_history(cmd->input);

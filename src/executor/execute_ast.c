@@ -36,35 +36,33 @@ int execute_command(t_node *node, int input_fd, int output_fd)
 
 int	execute_redir(t_node *node, int input_fd, int output_fd)
 {
-	int			new_fd;
-	pid_t		pid;
-	t_command	*cmd;
-	int			status;
+	(void)input_fd;
+	(void)output_fd;
+	int		new_fd;
+	int		original_in;
+	int		original_out;
+	int		status;
 
-	pid = fork();
-	if (pid == 0)
+	original_in = dup(STDIN_FILENO);
+	original_out = dup(STDOUT_FILENO);
+	new_fd = open_redir_file(node->redir_type, node->redir_file);
+	if (new_fd < 0)
 	{
-		new_fd = open_redir_file(node->redir_type, node->redir_file);
-		if (new_fd < 0)
-			exit (1);
-		if (node->redir_type == REDIR_IN_TOKEN || node->redir_type == HEREDOC_TOKEN)
-		{
-			if (dup2(new_fd, STDIN_FILENO) == -1)
-				error_handler("dup2 failed");
-		}
-		else if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
-		{
-			if (dup2(new_fd, STDOUT_FILENO) == -1)
-				error_handler("dup2 failed");
-		}
-		close(new_fd);
-		status = execute_node(node->left, STDIN_FILENO, STDOUT_FILENO);
-		ft_clear_mem();
-		exit(status);
+		close(original_in);
+		close(original_out);
+		return (1);
 	}
-	cmd = get_cmd_context(NULL);
-	cmd->status = process_parent(input_fd, output_fd, cmd, pid);
-	return (cmd->status);
+	if (node->redir_type == REDIR_IN_TOKEN || node->redir_type == HEREDOC_TOKEN)
+		dup2(new_fd, STDIN_FILENO);
+	else if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
+		dup2(new_fd, STDOUT_FILENO);
+	close(new_fd);
+	status = execute_node(node->left, STDIN_FILENO, STDOUT_FILENO);
+	dup2(original_in, STDIN_FILENO);
+	dup2(original_out, STDOUT_FILENO);
+	close(original_in);
+	close(original_out);
+	return (status);
 }
 
 int	execute_pipe(t_node *node, int input_fd, int output_fd)
@@ -91,6 +89,7 @@ int	execute_pipe(t_node *node, int input_fd, int output_fd)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	status = waitpid_status(pid);
+	setup_signals();
 	return (status);
 }
 
