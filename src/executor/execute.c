@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/15 21:08:08 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 14:34:45 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,12 @@ int	open_redir_file(t_token_type type, char *filename)
 	else
 		return (-1);
 	if (fd < 0)
-		print_cmd_error(filename, -2);
+	{
+		if (errno == ENOENT)
+			print_cmd_error(filename, -2);
+		else
+			print_cmd_error(filename, -1);
+	}
 	return (fd);
 }
 

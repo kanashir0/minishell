@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:00:00 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/14 11:17:10 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 15:29:57 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,7 @@ static int	read_heredoc_input(int fd, const char *delimiter)
 	{
 		line = readline("> ");
 		if (cmd->status == 130)
-		{
-			free(line);
-			return (130);
-		}
+			return (free(line), 130);
 		if (!line)
 		{
 			ft_printf_fd(STDOUT_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `%s')\n", delimiter);
@@ -68,19 +65,16 @@ static int	read_heredoc_input(int fd, const char *delimiter)
 char	*handle_heredoc(const char *delimiter)
 {
 	char		*filename;
-	t_command	*cmd;
 	int			status;
 	int			fd;
 	int			stdin_backup;
 
-	cmd = get_cmd_context(NULL);
 	filename = get_heredoc_filename();
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
 	{
 		print_cmd_error(filename, -2);
-		untrack_pointer(filename);
-		return (NULL);
+		return (untrack_pointer(filename), NULL);
 	}
 	stdin_backup = dup(STDIN_FILENO);
 	status = read_heredoc_input(fd, delimiter);
@@ -90,10 +84,9 @@ char	*handle_heredoc(const char *delimiter)
 	signal(SIGINT, sigint_handler);
 	if (status == 130)
 	{
-		cmd->status = status;
+		get_cmd_context(NULL)->status = status;
 		unlink(filename);
-		untrack_pointer(filename);
-		return (NULL);
+		return (untrack_pointer(filename), NULL);
 	}
 	return (filename);
 }
