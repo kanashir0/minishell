@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/15 20:52:06 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/15 21:07:27 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,32 +37,31 @@ int execute_command(t_node *node)
 
 int	execute_redir(t_node *node)
 {
-	int			new_fd;
-	pid_t		pid;
-	t_command	*cmd;
+	int		new_fd;
+	int		input_fd;
+	int		output_fd;
+	int		status;
 
-	pid = fork();
-	if (pid == 0)
+	input_fd = dup(STDIN_FILENO);
+	output_fd = dup(STDOUT_FILENO);
+	new_fd = open_redir_file(node->redir_type, node->redir_file);
+	if (new_fd < 0)
 	{
-		new_fd = open_redir_file(node->redir_type, node->redir_file);
-		if (new_fd < 0)
-			exit (1);
-		if (node->redir_type == REDIR_IN_TOKEN || node->redir_type == HEREDOC_TOKEN)
-		{
-			if (dup2(new_fd, STDIN_FILENO) == -1)
-				error_handler("dup2 failed");
-		}
-		else if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
-		{
-			if (dup2(new_fd, STDOUT_FILENO) == -1)
-				error_handler("dup2 failed");
-		}
-		close(new_fd);
-		exit (execute_node(node->left));
+		close(input_fd);
+		close(output_fd);
+		return (1);
 	}
-	cmd = get_cmd_context(NULL);
-	cmd->status = process_parent(cmd, pid);
-	return (cmd->status);
+	if (node->redir_type == REDIR_IN_TOKEN || node->redir_type == HEREDOC_TOKEN)
+		dup2(new_fd, STDIN_FILENO);
+	else if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
+		dup2(new_fd, STDOUT_FILENO);
+	close(new_fd);
+	status = execute_node(node->left);
+	dup2(input_fd, STDIN_FILENO);
+	dup2(output_fd, STDOUT_FILENO);
+	close(input_fd);
+	close(output_fd);
+	return (status);
 }
 
 int	execute_pipe(t_node *node)
@@ -87,6 +86,7 @@ int	execute_pipe(t_node *node)
 	close(pipefd[0]);
 	close(pipefd[1]);
 	status = waitpid_status(pid);
+	setup_signals();
 	return (status);
 }
 

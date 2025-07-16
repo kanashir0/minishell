@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/12 15:46:45 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/15 21:12:11 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	read_input(t_command *cmd)
 	{
 		ft_printf_fd(STDOUT_FILENO, "exit\n");
 		ft_clear_mem();
-		exit(cmd->status);
+		exit(131);
 	}
 	if (cmd->input)
 		add_history(cmd->input);
