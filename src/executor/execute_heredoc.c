@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:00:00 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/16 15:29:57 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:59:57 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,18 @@ static char	*get_heredoc_filename(void)
 static int	read_heredoc_input(int fd, const char *delimiter)
 {
 	char		*line;
-	t_command	*cmd;
 
-	cmd = get_cmd_context(NULL);
-	cmd->status = 0;
+	get_cmd_context(NULL)->status = 0;
 	signal(SIGINT, heredoc_sigint_handler);
 	while (42)
 	{
 		line = readline("> ");
-		if (cmd->status == 130)
+		if (get_cmd_context(NULL)->status == 130)
 			return (free(line), 130);
 		if (!line)
 		{
-			ft_printf_fd(STDOUT_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `%s')\n", delimiter);
+			ft_printf_fd(STDOUT_FILENO, \
+				"minishell: "WARNING" (wanted `%s')\n", delimiter);
 			break ;
 		}
 		if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)

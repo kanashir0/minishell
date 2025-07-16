@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gkana <gkana@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 19:46:33 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/13 19:47:28 by gkana            ###   ########.fr       */
+/*   Updated: 2025/07/16 17:11:04 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	add_heredoc_file(t_command *cmd, char *filename)
 {
-	int	i;
+	int		i;
 	char	**new_files;
 
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 15:17:16 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 16:17:41 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:45:00 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	ft_printnbr_fd(int n, int fd)
 {
 	long	nb;
-	int				len;
+	int		len;
 
 	len = 0;
 	if (n < 0)
@@ -61,7 +61,7 @@ int	ft_printf_fd(int fd, const char *str, ...)
 		if (*str == '%')
 		{
 			if (*(str + 1) == '\0')
-				break;
+				break ;
 			i += printf_type_fd(args, *++str, fd);
 		}
 		else

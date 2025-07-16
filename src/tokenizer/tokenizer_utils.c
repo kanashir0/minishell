@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 17:21:41 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/13 18:10:42 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 17:11:31 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ void	remove_empty_token(t_token **tokens, t_token *curr, t_token *prev)
 	untrack_pointer(to_delete->value);
 }
 
-void free_token_list(t_token **tokens)
+void	free_token_list(t_token **tokens)
 {
-	t_token *curr;
-	t_token *next;
+	t_token	*curr;
+	t_token	*next;
 
 	if (!tokens)
-		return;
+		return ;
 	curr = *tokens;
 	while (curr)
 	{

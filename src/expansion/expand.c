@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 18:10:33 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 16:51:49 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,18 @@ static void	single_quoted(char *input, int *i, char **res)
 		(*i)++;
 }
 
-static void	double_quoted(char *input, int *i, char **res, t_env *ev, int status)
+static void	double_quoted(char *input, int *i, char **res, int status)
 {
-	char	*tmp;
+	char		*tmp;
+	t_command	*cmd;
 
 	(*i)++;
+	cmd = get_cmd_context(NULL);
 	while (input[*i] && input[*i] != '"')
 	{
 		if (input[*i] == '$')
 		{
-			tmp = handle_dollar(input, i, ev, status);
+			tmp = handle_dollar(input, i, cmd->env_list, status);
 			append_and_free(res, tmp);
 		}
 		else
@@ -50,15 +52,17 @@ static void	double_quoted(char *input, int *i, char **res, t_env *ev, int status
 		(*i)++;
 }
 
-static void	unquoted(char *input, int *i, char **res, t_env *ev, int status)
+static void	unquoted(char *input, int *i, char **res, int status)
 {
-	char	*tmp;
+	char		*tmp;
+	t_command	*cmd;
 
-	tmp = handle_dollar(input, i, ev, status);
+	cmd = get_cmd_context(NULL);
+	tmp = handle_dollar(input, i, cmd->env_list, status);
 	append_and_free(res, tmp);
 }
 
-static char	*expand_string(char *input, t_env *environ, int status)
+static char	*expand_string(char *input, int status)
 {
 	int		i;
 	char	*res;
@@ -70,14 +74,14 @@ static char	*expand_string(char *input, t_env *environ, int status)
 		if (input[i] == '\'')
 			single_quoted(input, &i, &res);
 		else if (input[i] == '"')
-			double_quoted(input, &i, &res, environ, status);
+			double_quoted(input, &i, &res, status);
 		else
-			unquoted(input, &i, &res, environ, status);
+			unquoted(input, &i, &res, status);
 	}
 	return (res);
 }
 
-void	expand_tokens(t_token **tokens, t_env *env, int status)
+void	expand_tokens(t_token **tokens, int status)
 {
 	t_token	*curr;
 	t_token	*prev;
@@ -89,7 +93,7 @@ void	expand_tokens(t_token **tokens, t_env *env, int status)
 	{
 		if (curr->type == WORD_TOKEN && curr->value)
 		{
-			expanded = expand_string(curr->value, env, status);
+			expanded = expand_string(curr->value, status);
 			untrack_pointer(curr->value);
 			curr->value = expanded;
 			if (curr->value[0] == '\0')

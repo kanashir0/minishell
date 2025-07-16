@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/16 14:34:45 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:59:36 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	pipe_child_left(t_node *node, int fd[2])
 
 	close(fd[0]);
 	if (dup2(fd[1], STDOUT_FILENO) == -1)
-		error_handler("Error: Failed to duplicate file descriptor");
+		error_handler(FORK);
 	close(fd[1]);
 	status = execute_node(node);
 	ft_clear_mem();
@@ -31,7 +31,7 @@ void	pipe_child_right(t_node *node, int fd[2])
 
 	close(fd[1]);
 	if (dup2(fd[0], STDIN_FILENO) == -1)
-		error_handler("Error: Failed to duplicate file descriptor");
+		error_handler(FORK);
 	close(fd[0]);
 	status = execute_node(node);
 	ft_clear_mem();

@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/15 20:10:55 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:53:45 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@
 # define SUCCESS 0
 # define FAILURE 1
 # define SYNTAX_ERROR 2
+
+# define DUP2 "Error: Failed to duplicate file descriptor"
+# define FORK "Error: Failed to fork process"
+# define WARNING "warning: here-document delimited by end-of-file"
 
 # define MINISHELL "\001\033[01;38;5;33m\002"
 # define COMMAND "\001\033[0m\002"
@@ -134,7 +138,7 @@ void		append_and_free(char **res, char *tmp);
 char		*extract_env_value(char *input, int *i, t_env *environ);
 char		*handle_dollar_special_cases(char c, int *i, int status);
 char		*handle_dollar(char *input, int *i, t_env *ev, int status);
-void 		expand_tokens(t_token **tokens, t_env *env, int status);
+void		expand_tokens(t_token **tokens, int status);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);
@@ -143,7 +147,7 @@ void		init_env(t_command *cmd, char **envp);
 void		init_under(t_command *cmd, char *prog);
 void		error_handler(char *msg);
 int			print_cmd_error(char *command, int res);
-void 		update_under(t_command *cmd, char *new_value);
+void		update_under(t_command *cmd, char *new_value);
 
 // Tokenizer
 t_token		**tokenizer(char *input);
@@ -156,7 +160,7 @@ void		remove_empty_token(t_token **tokens, t_token *curr, t_token *prev);
 t_node		*generate_ast(t_token **tokens);
 t_node		*new_node(t_node_type n_type, t_node *left, t_node *right);
 void		free_ast(t_node *node);
-int		preprocess_heredocs(t_node *node);
+int			preprocess_heredocs(t_node *node);
 
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);

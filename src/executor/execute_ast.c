@@ -6,19 +6,19 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:07:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/15 21:07:27 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:58:30 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int execute_command(t_node *node)
+int	execute_command(t_node *node)
 {
 	t_command	*cmd;
 	char		**args;
 	int			i;
 
-	cmd  = get_cmd_context(NULL);
+	cmd = get_cmd_context(NULL);
 	args = node->argv;
 	i = 0;
 	while (args[i])
@@ -53,7 +53,7 @@ int	execute_redir(t_node *node)
 	}
 	if (node->redir_type == REDIR_IN_TOKEN || node->redir_type == HEREDOC_TOKEN)
 		dup2(new_fd, STDIN_FILENO);
-	else if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
+	if (node->redir_type == REDIR_OUT_TOKEN || node->redir_type == APPEND_TOKEN)
 		dup2(new_fd, STDOUT_FILENO);
 	close(new_fd);
 	status = execute_node(node->left);
@@ -73,13 +73,13 @@ int	execute_pipe(t_node *node)
 	pipe(pipefd);
 	pid[0] = fork();
 	if (pid[0] < 0)
-		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
+		return (perror(FORK), close(pipefd[0]), close(pipefd[1]), 1);
 	process_signals(pid[0]);
 	if (pid[0] == 0)
 		pipe_child_left(node->left, pipefd);
 	pid[1] = fork();
 	if (pid[1] < 0)
-		return (perror("fork"), close(pipefd[0]), close(pipefd[1]), 1);
+		return (perror(FORK), close(pipefd[0]), close(pipefd[1]), 1);
 	process_signals(pid[1]);
 	if (pid[1] == 0)
 		pipe_child_right(node->right, pipefd);

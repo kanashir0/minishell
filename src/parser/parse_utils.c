@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 11:05:28 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/03 18:35:29 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/16 16:02:32 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,12 @@ void	free_ast(t_node *node)
 	int	i;
 
 	if (!node)
-		return;
+		return ;
 	free_ast(node->left);
 	free_ast(node->right);
 	i = 0;
-	if (node->type == WORD_NODE && node->argv) {
+	if (node->type == WORD_NODE && node->argv)
+	{
 		while (node->argv[i])
 			untrack_pointer(node->argv[i++]);
 		untrack_pointer(node->argv);

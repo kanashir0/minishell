@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:25:40 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 15:49:07 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 17:09:15 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	waitpid_status(int pid[2])
 	int			status;
 	int			sig;
 	t_command	*cmd;
-
 
 	waitpid(pid[0], NULL, 0);
 	waitpid(pid[1], &status, 0);

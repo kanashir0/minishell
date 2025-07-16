@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:54:14 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 14:19:10 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 16:54:36 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ int	builtin_exit(char **args, t_command *cmd)
 	}
 	if (!is_numeric(args[1]))
 	{
-		ft_printf_fd(STDERR_FILENO, "%s: %s: numeric argument required\n", args[0], args[1]);
+		ft_printf_fd(STDERR_FILENO, "%s: %s: numeric argument required\n", \
+			args[0], args[1]);
 		ft_clear_mem();
 		exit(2);
 	}
