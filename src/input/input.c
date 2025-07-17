@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/16 19:55:11 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:58:17 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 void	read_input(t_command *cmd)
 {
+	int	exit_status;
+
 	cmd->input = readline(MINISHELL "minishell$ " COMMAND);
 	if (!cmd->input)
 	{
+		exit_status = cmd->status;
 		ft_printf_fd(STDOUT_FILENO, "exit\n");
 		ft_clear_mem();
-		exit(cmd->status);
+		exit(exit_status);
 	}
 	if (cmd->input)
 		add_history(cmd->input);
