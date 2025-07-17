@@ -6,13 +6,13 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/16 16:51:49 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 16:27:08 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	single_quoted(char *input, int *i, char **res)
+void	single_quoted(char *input, int *i, char **res)
 {
 	char	*tmp;
 	int		start;
@@ -99,6 +99,7 @@ void	expand_tokens(t_token **tokens, int status)
 			if (curr->value[0] == '\0')
 			{
 				remove_empty_token(tokens, curr, prev);
+				curr = curr->next;
 				continue ;
 			}
 		}

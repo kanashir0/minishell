@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/16 19:53:45 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 18:46:17 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,11 +134,15 @@ void		pipe_child_right(t_node *node, int fd[2]);
 int			process_parent(t_command *cmd, pid_t pid);
 
 // Expansion
+void		single_quoted(char *input, int *i, char **res);
 void		append_and_free(char **res, char *tmp);
 char		*extract_env_value(char *input, int *i, t_env *environ);
 char		*handle_dollar_special_cases(char c, int *i, int status);
 char		*handle_dollar(char *input, int *i, t_env *ev, int status);
 void		expand_tokens(t_token **tokens, int status);
+char		*strip_quotes(char *delim);
+int			should_expand(char *delim);
+void		unquoted_heredoc(char **line);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);

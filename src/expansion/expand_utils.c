@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 18:47:51 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/05 17:21:40 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 16:44:34 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*handle_dollar_special_cases(char c, int *i, int status)
 	if (c == '?')
 		return (ft_itoa(status));
 	if (c == '$')
-		return (ft_itoa(getpid()));
+		return (ft_strdup("$"));
 	if (c == '!')
 		return (ft_strdup(""));
 	return (NULL);

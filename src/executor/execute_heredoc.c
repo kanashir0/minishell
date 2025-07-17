@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:00:00 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/16 19:59:57 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 18:45:21 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,10 @@ static char	*get_heredoc_filename(void)
 
 static int	read_heredoc_input(int fd, const char *delimiter)
 {
-	char		*line;
+	char	*raw;
+	char	*line;
 
+	raw = strip_quotes((char *)(delimiter));
 	get_cmd_context(NULL)->status = 0;
 	signal(SIGINT, heredoc_sigint_handler);
 	while (42)
@@ -47,13 +49,19 @@ static int	read_heredoc_input(int fd, const char *delimiter)
 		if (!line)
 		{
 			ft_printf_fd(STDOUT_FILENO, \
-				"minishell: "WARNING" (wanted `%s')\n", delimiter);
+				"minishell: "WARNING" (wanted `%s')\n", raw);
 			break ;
 		}
-		if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
+		if (ft_strncmp(line, raw, ft_strlen(raw) + 1) == 0)
 		{
 			free(line);
 			break ;
+		}
+		if (should_expand(raw) == 1)
+		{
+			unquoted_heredoc(&line);
+			ft_putendl_fd(line, fd);
+			continue ;
 		}
 		ft_putendl_fd(line, fd);
 		free(line);

@@ -28,9 +28,8 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(BUI_DIR), echo.c pwd.c cd.c export.c unset.c env.c exit.c) \
 		$(addprefix $(ENV_DIR), environ.c env_utils.c) \
 		$(addprefix $(EXE_DIR), execute.c exec_path.c execute_ast.c execute_heredoc.c) \
-		$(addprefix $(EXP_DIR), expand.c expand_utils.c) \
+		$(addprefix $(EXP_DIR), expand.c expand_utils.c expand_heredoc.c) \
 		$(addprefix $(PAR_DIR), parse_ast.c parse_utils.c preprocess.c) \
-		$(addprefix $(RED_DIR), ) \
 		$(addprefix $(SIG_DIR), setup.c handlers.c) \
 		$(addprefix $(TOK_DIR), tokenizer.c tokenizer_utils.c) \
 		$(addprefix $(UTL_DIR), init.c error.c helpers.c heredoc_utils.c) \
