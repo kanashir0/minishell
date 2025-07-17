@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:25:24 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/16 16:49:41 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:28:02 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,12 @@ int	main(int ac, char **av, char **envp)
 				continue ;
 			}
 			ast = generate_ast(cmd->tokens);
+			if (!ast)
+			{
+				free(cmd->input);
+				cmd->input = NULL;
+				continue ;
+			}
 			if (preprocess_heredocs(ast) == -1)
 			{
 				free_ast(ast);

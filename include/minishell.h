@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/17 18:46:17 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:28:07 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_command
 	char	**args;
 	int		status;
 	int		executing;
+	int		in_pipe;
 	t_env	*env_list;
 	t_token	**tokens;
 	char	**heredoc_files;
@@ -169,6 +170,7 @@ int			preprocess_heredocs(t_node *node);
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);
 void		syntax_error_unclosed_quote(char quote);
+void		syntax_error_near_token(char *token);
 int			waitpid_status(int pid[2]);
 void		cleanup_heredocs(t_command *cmd);
 void		add_heredoc_file(t_command *cmd, char *filename);

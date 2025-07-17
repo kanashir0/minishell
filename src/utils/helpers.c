@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:25:40 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/16 17:09:15 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:48:57 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@ void	syntax_error_unclosed_quote(char quote)
 	get_cmd_context(NULL)->status = 2;
 }
 
+void	syntax_error_near_token(char *token)
+{
+	ft_printf_fd(STDERR_FILENO, \
+		"minishell: syntax error near unexpected token `%s'\n", token);
+	get_cmd_context(NULL)->status = 2;
+}
+
 int	waitpid_status(int pid[2])
 {
 	int			status;
@@ -45,8 +52,6 @@ int	waitpid_status(int pid[2])
 	else if (WIFSIGNALED(status))
 	{
 		sig = WTERMSIG(status);
-		if (sig == SIGQUIT && __WCOREDUMP(status))
-			ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
 		cmd->status = 128 + sig;
 	}
 	else

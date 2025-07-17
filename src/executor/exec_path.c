@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/16 17:03:58 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:11:28 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	process_parent(t_command *cmd, pid_t pid)
 	else if (WIFSIGNALED(cmd->status))
 	{
 		sig = WTERMSIG(cmd->status);
-		if (sig == SIGQUIT && __WCOREDUMP(cmd->status))
+		if (sig == SIGQUIT && __WCOREDUMP(cmd->status) && !cmd->in_pipe)
 			ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
 		cmd->status = 128 + sig;
 	}

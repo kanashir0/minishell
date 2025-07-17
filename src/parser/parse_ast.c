@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 16:31:16 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/13 17:24:14 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:47:31 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,22 @@ static void	append_redirection(t_node **current_cmd_root,
 static int	handle_redir_token(t_token **tokens,
 	t_node **current_cmd_root, t_node *cmd_node)
 {
-	t_node	*redir_node;
+	t_node			*redir_node;
+	t_token_type	redir_type;
 
 	redir_node = new_node(REDIR_NODE, NULL, NULL);
+	redir_type = (*tokens)->type;
 	redir_node->redir_type = consume_token(tokens)->type;
 	if (!match_token(tokens, WORD_TOKEN))
 	{
+		if (redir_type == REDIR_IN_TOKEN)
+			syntax_error_near_token("<");
+		else if (redir_type == REDIR_OUT_TOKEN)
+			syntax_error_near_token(">");
+		else if (redir_type == APPEND_TOKEN)
+			syntax_error_near_token(">>");
+		else if (redir_type == HEREDOC_TOKEN)
+			syntax_error_near_token("<<");
 		free_ast(*current_cmd_root);
 		untrack_pointer(redir_node);
 		return (-1);
@@ -84,13 +94,18 @@ t_node	*parse_pipe(t_token **tokens)
 
 	left = parse_command(tokens);
 	if (!left)
+	{
+		if (*tokens && (*tokens)->type == PIPE_TOKEN)
+			return (syntax_error_near_token("|"), NULL);
 		return (NULL);
+	}
 	while (match_token(tokens, PIPE_TOKEN))
 	{
 		consume_token(tokens);
 		right = parse_command(tokens);
 		if (!right)
 		{
+			syntax_error_near_token("|");
 			free_ast(left);
 			return (NULL);
 		}

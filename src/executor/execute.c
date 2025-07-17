@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/16 19:59:36 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:48:41 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 void	pipe_child_left(t_node *node, int fd[2])
 {
-	int	status;
+	int			status;
+	t_command	*cmd;
 
+	cmd = get_cmd_context(NULL);
+	cmd->in_pipe = 1;
 	close(fd[0]);
 	if (dup2(fd[1], STDOUT_FILENO) == -1)
 		error_handler(FORK);
@@ -27,8 +30,11 @@ void	pipe_child_left(t_node *node, int fd[2])
 
 void	pipe_child_right(t_node *node, int fd[2])
 {
-	int	status;
+	int			status;
+	t_command	*cmd;
 
+	cmd = get_cmd_context(NULL);
+	cmd->in_pipe = 1;
 	close(fd[1]);
 	if (dup2(fd[0], STDIN_FILENO) == -1)
 		error_handler(FORK);
