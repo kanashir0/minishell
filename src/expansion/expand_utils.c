@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 18:47:51 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/17 16:44:34 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:30:00 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,26 @@ char	*handle_dollar(char *input, int *i, t_env *ev, int status)
 		return (extract_env_value(input, i, ev));
 	else
 		return (ft_strdup("$"));
+}
+
+void	split_token(t_token *curr, char **words)
+{
+	t_token	*new_token;
+	t_token	*tmp;
+	int		i;
+
+	untrack_pointer(curr->value);
+	curr->value = words[0];
+	tmp = curr->next;
+	i = 1;
+	while (words[i])
+	{
+		new_token = ft_calloc(1, sizeof(t_token));
+		new_token->type = WORD_TOKEN;
+		new_token->value = words[i];
+		curr->next = new_token;
+		curr = new_token;
+		i++;
+	}
+	curr->next = tmp;
 }

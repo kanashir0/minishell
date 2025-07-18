@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/17 16:27:08 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:00:00 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	double_quoted(char *input, int *i, char **res, int status)
 			(*i)++;
 		}
 	}
-	if (input[*i] == '\"')
+	if (input[*i] == '"')
 		(*i)++;
 }
 
@@ -86,6 +86,8 @@ void	expand_tokens(t_token **tokens, int status)
 	t_token	*curr;
 	t_token	*prev;
 	char	*expanded;
+	char	**words;
+	int		had_quotes;
 
 	curr = *tokens;
 	prev = NULL;
@@ -93,9 +95,17 @@ void	expand_tokens(t_token **tokens, int status)
 	{
 		if (curr->type == WORD_TOKEN && curr->value)
 		{
+			had_quotes = (ft_strchr(curr->value, '\'') != NULL || \
+				ft_strchr(curr->value, '"') != NULL);
 			expanded = expand_string(curr->value, status);
 			untrack_pointer(curr->value);
 			curr->value = expanded;
+			if (!had_quotes && ft_strchr(curr->value, ' '))
+			{
+				words = ft_split(curr->value, ' ');
+				split_token(curr, words);
+				untrack_pointer(words);
+			}
 			if (curr->value[0] == '\0')
 			{
 				remove_empty_token(tokens, curr, prev);

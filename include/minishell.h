@@ -143,6 +143,7 @@ char		*extract_env_value(char *input, int *i, t_env *environ);
 char		*handle_dollar_special_cases(char c, int *i, int status);
 char		*handle_dollar(char *input, int *i, t_env *ev, int status);
 void		expand_tokens(t_token **tokens, int status);
+void		split_token(t_token *curr, char **words);
 char		*strip_quotes(char *delim);
 int			should_expand(char *delim);
 void		unquoted_heredoc(char **line);
