@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/17 14:58:17 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 22:27:18 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	read_input(t_command *cmd)
 		ft_clear_mem();
 		exit(exit_status);
 	}
-	if (cmd->input)
+	if (cmd->input && !is_empty_input(cmd->input))
 		add_history(cmd->input);
 	return ;
 }

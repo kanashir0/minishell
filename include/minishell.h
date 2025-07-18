@@ -94,6 +94,7 @@ typedef struct s_command
 
 // Input
 void		read_input(t_command *cmd);
+void		process_input(t_command *cmd);
 int			is_empty_input(char *input);
 int			ft_isspace(int c);
 int			check_input(char *input, int *len);

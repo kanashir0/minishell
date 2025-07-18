@@ -33,7 +33,7 @@ SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(SIG_DIR), setup.c handlers.c) \
 		$(addprefix $(TOK_DIR), tokenizer.c tokenizer_utils.c) \
 		$(addprefix $(UTL_DIR), init.c error.c helpers.c heredoc_utils.c) \
-		$(addprefix $(INP_DIR), input.c)
+		$(addprefix $(INP_DIR), input.c process_input.c)
 
 OBJS = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 
