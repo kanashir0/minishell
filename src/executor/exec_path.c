@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/17 20:11:28 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:31:19 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	process_child(char **args, t_command *cmd, char *command)
 	environ = environ_list(cmd->env_list, count_env(cmd->env_list));
 	if (!environ)
 	{
-		perror("malloc");
+		perror("minishell");
 		exit (1);
 	}
 	if (stat(command, &file) == 0)

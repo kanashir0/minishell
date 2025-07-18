@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/17 20:28:07 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:29:51 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 
 # define DUP2 "Error: Failed to duplicate file descriptor"
 # define FORK "Error: Failed to fork process"
+# define MALLOC "Error: When using malloc"
 # define WARNING "warning: here-document delimited by end-of-file"
 
 # define MINISHELL "\001\033[01;38;5;33m\002"

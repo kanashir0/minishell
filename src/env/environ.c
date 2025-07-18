@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:29:00 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/14 11:08:39 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:30:15 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_env	**env_list_copy(t_env *env_list)
 	len_env = count_env(env_list);
 	env_copy = ft_collect_mem(sizeof(t_env *), len_env + 1);
 	if (!env_copy)
-		perror("malloc");
+		return (NULL);
 	i = 0;
 	while (env_list)
 	{
