@@ -8,7 +8,6 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra -g3
 LDFLAGS = -lreadline -lncurses
 
-
 LIB_DIR = lib/libft/
 INC_DIR = -I include/ -I $(LIB_DIR)
 OBJ_DIR = objs/
@@ -27,7 +26,7 @@ INP_DIR = src/input/
 SRC =	$(addprefix $(SRC_DIR), main.c) \
 		$(addprefix $(BUI_DIR), echo.c pwd.c cd.c export.c unset.c env.c exit.c) \
 		$(addprefix $(ENV_DIR), environ.c env_utils.c) \
-		$(addprefix $(EXE_DIR), execute.c exec_path.c execute_ast.c execute_heredoc.c) \
+		$(addprefix $(EXE_DIR), execute.c execute_path.c execute_ast.c execute_heredoc.c) \
 		$(addprefix $(EXP_DIR), expand.c expand_utils.c expand_heredoc.c) \
 		$(addprefix $(PAR_DIR), parse_ast.c parse_utils.c preprocess.c) \
 		$(addprefix $(SIG_DIR), setup.c handlers.c) \
