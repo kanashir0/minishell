@@ -6,13 +6,13 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 14:46:31 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 15:33:55 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 16:27:08 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	single_quoted(char *input, int *i, char **res)
+void	single_quoted(char *input, int *i, char **res)
 {
 	char	*tmp;
 	int		start;
@@ -27,16 +27,18 @@ static void	single_quoted(char *input, int *i, char **res)
 		(*i)++;
 }
 
-static void	double_quoted(char *input, int *i, char **res, t_env *ev, int status)
+static void	double_quoted(char *input, int *i, char **res, int status)
 {
-	char	*tmp;
+	char		*tmp;
+	t_command	*cmd;
 
 	(*i)++;
+	cmd = get_cmd_context(NULL);
 	while (input[*i] && input[*i] != '"')
 	{
 		if (input[*i] == '$')
 		{
-			tmp = handle_dollar(input, i, ev, status);
+			tmp = handle_dollar(input, i, cmd->env_list, status);
 			append_and_free(res, tmp);
 		}
 		else
@@ -50,15 +52,17 @@ static void	double_quoted(char *input, int *i, char **res, t_env *ev, int status
 		(*i)++;
 }
 
-static void	unquoted(char *input, int *i, char **res, t_env *ev, int status)
+static void	unquoted(char *input, int *i, char **res, int status)
 {
-	char	*tmp;
+	char		*tmp;
+	t_command	*cmd;
 
-	tmp = handle_dollar(input, i, ev, status);
+	cmd = get_cmd_context(NULL);
+	tmp = handle_dollar(input, i, cmd->env_list, status);
 	append_and_free(res, tmp);
 }
 
-static char	*expand_string(char *input, t_env *environ, int status)
+static char	*expand_string(char *input, int status)
 {
 	int		i;
 	char	*res;
@@ -70,51 +74,36 @@ static char	*expand_string(char *input, t_env *environ, int status)
 		if (input[i] == '\'')
 			single_quoted(input, &i, &res);
 		else if (input[i] == '"')
-			double_quoted(input, &i, &res, environ, status);
+			double_quoted(input, &i, &res, status);
 		else
-			unquoted(input, &i, &res, environ, status);
+			unquoted(input, &i, &res, status);
 	}
 	return (res);
 }
 
-void	expand_tokens(t_token **tokens, t_env *env, int status)
+void	expand_tokens(t_token **tokens, int status)
 {
-	t_token	*cur = *tokens;
+	t_token	*curr;
+	t_token	*prev;
 	char	*expanded;
 
-	while (cur)
+	curr = *tokens;
+	prev = NULL;
+	while (curr)
 	{
-		if (cur->type == WORD_TOKEN && cur->value)
+		if (curr->type == WORD_TOKEN && curr->value)
 		{
-			expanded = expand_string(cur->value, env, status);
-			untrack_pointer(cur->value);   // libera a string antiga
-			cur->value = expanded;         // seta a nova
+			expanded = expand_string(curr->value, status);
+			untrack_pointer(curr->value);
+			curr->value = expanded;
+			if (curr->value[0] == '\0')
+			{
+				remove_empty_token(tokens, curr, prev);
+				curr = curr->next;
+				continue ;
+			}
 		}
-		cur = cur->next;
+		prev = curr;
+		curr = curr->next;
 	}
 }
-
-// void	expand(t_node *node)
-// {
-// 	t_command	*cmd;
-// 	t_env		*environ;
-// 	int			index;
-// 	char		*new;
-
-// 	cmd = get_cmd_context(NULL);
-// 	environ = cmd->env_list;
-// 	if (!node)
-// 		return ;
-// 	if (node->type == WORD_NODE && node->argv)
-// 	{
-// 		index = 0;
-// 		while (node->argv[index])
-// 		{
-// 			new = expand_string(node->argv[index], environ, cmd->status);
-// 			node->argv[index] = new;
-// 			index++;
-// 		}
-// 	}
-// 	expand(node->left);
-// 	expand(node->right);
-// }

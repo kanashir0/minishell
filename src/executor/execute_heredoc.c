@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:00:00 by gkana             #+#    #+#             */
-/*   Updated: 2025/07/12 14:02:47 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2025/07/17 22:24:00 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,57 +33,89 @@ static char	*get_heredoc_filename(void)
 	return (filename);
 }
 
-static int	heredoc_child(char *filename, const char *delimiter)
+static int	check_heredoc_conditions(const char *line,
+	char *raw_delimiter)
 {
-	char	*line;
-	int		fd;
-
-	signal(SIGINT, heredoc_sigint_handler);
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0)
+	if (get_cmd_context(NULL)->status == 130)
+		return (130);
+	if (!line)
 	{
-		perror("open error");
-		exit(1);
+		ft_printf_fd(STDOUT_FILENO, "minishell: "WARNING" (wanted `%s')\n",
+			raw_delimiter);
+		return (1);
 	}
+	if (ft_strncmp(line, raw_delimiter, ft_strlen(raw_delimiter) + 1) == 0)
+		return (1);
+	return (0);
+}
+
+static void	write_and_free_line(int fd, char *line, char *raw_delimiter)
+{
+	if (should_expand(raw_delimiter) == 1)
+	{
+		unquoted_heredoc(&line);
+		ft_putendl_fd(line, fd);
+	}
+	else
+	{
+		ft_putendl_fd(line, fd);
+		free(line);
+	}
+}
+
+static int	read_heredoc_input(int fd, const char *delimiter)
+{
+	char	*raw;
+	char	*line;
+	int		status;
+
+	raw = strip_quotes((char *)(delimiter));
+	get_cmd_context(NULL)->status = 0;
+	signal(SIGINT, heredoc_sigint_handler);
 	while (42)
 	{
 		line = readline("> ");
-		if (!line || ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
+		status = check_heredoc_conditions(line, raw);
+		if (status == 130)
+		{
+			free(line);
+			return (130);
+		}
+		if (status == 1)
 		{
 			free(line);
 			break ;
 		}
-		ft_putendl_fd(line, fd);
-		free(line);
+		write_and_free_line(fd, line, raw);
 	}
-	ft_clear_mem();
-	close(fd);
-	exit(0);
+	return (0);
 }
 
-int	handle_heredoc(const char *delimiter)
+char	*handle_heredoc(const char *delimiter)
 {
 	char		*filename;
-	pid_t		pid;
-	t_command	*cmd;
+	int			status;
 	int			fd;
+	int			stdin_backup;
 
-	cmd = get_cmd_context(NULL);
 	filename = get_heredoc_filename();
-	signal(SIGINT, SIG_IGN);
-	pid = fork();
-	if (pid == 0)
-		heredoc_child(filename, delimiter);
-	waitpid(pid, &cmd->status, 0);
-	signal(SIGINT, sigint_handler);
-	if (WIFEXITED(cmd->status) && WEXITSTATUS(cmd->status) == 130)
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
 	{
-		unlink(filename);
-		untrack_pointer(filename);
-		return (-1);
+		print_cmd_error(filename, -2);
+		return (untrack_pointer(filename), NULL);
 	}
-	fd = open(filename, O_RDONLY);
-	unlink(filename);
-	untrack_pointer(filename);
-	return (fd);
+	stdin_backup = dup(STDIN_FILENO);
+	status = read_heredoc_input(fd, delimiter);
+	close(fd);
+	dup2(stdin_backup, STDIN_FILENO);
+	close(stdin_backup);
+	signal(SIGINT, sigint_handler);
+	if (status == 130)
+	{
+		get_cmd_context(NULL)->status = status;
+		unlink(filename);
+		return (untrack_pointer(filename), NULL);
+	}
+	return (filename);
 }

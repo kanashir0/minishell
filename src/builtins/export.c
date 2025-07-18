@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:38:54 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 15:44:31 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:51:48 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	print_env(t_env **environ)
 	while (environ[i])
 	{
 		if (ft_strncmp(environ[i]->key, "_", 1) == 0
-				&& environ[i]->key[1] == '\0')
+			&& environ[i]->key[1] == '\0')
 		{
 			i++;
 			continue ;
@@ -63,16 +63,21 @@ static int	print_export_list(t_env *env_list)
 static void	export_arg(t_command *cmd, char *arg)
 {
 	t_env	*node;
-	char	**kv;
+	char	*kv;
 	char	*key;
 	char	*val;
 
-	kv = ft_split(arg, '=');
-	key = kv[0];
-	if (kv[1])
-		val = ft_strdup(kv[1]);
+	kv = ft_strchr(arg, '=');
+	if (kv)
+	{
+		key = ft_substr(arg, 0, ft_strlen(arg) - ft_strlen(kv));
+		val = ft_strdup(&kv[1]);
+	}
 	else
+	{
+		key = arg;
 		val = NULL;
+	}
 	node = get_env(cmd->env_list, key);
 	if (node)
 	{
@@ -80,10 +85,7 @@ static void	export_arg(t_command *cmd, char *arg)
 		node->value = val;
 	}
 	else
-	{
-		node = new_env(key, val);
-		addback_env(&cmd->env_list, node);
-	}
+		addback_env(&cmd->env_list, new_env(key, val));
 }
 
 int	export(char **args, t_command *cmd)
@@ -99,7 +101,8 @@ int	export(char **args, t_command *cmd)
 	{
 		if (!is_valid_key(args[i]))
 		{
-			ft_printf_fd(STDERR_FILENO, "minishell: export: `%s': not a valid identifier\n", args[i]);
+			ft_printf_fd(STDERR_FILENO, \
+				"minishell: export: `%s': not a valid identifier\n", args[i]);
 			status = FAILURE;
 		}
 		else

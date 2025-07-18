@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:29:00 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/06/22 15:12:36 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:30:15 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_env	**env_list_copy(t_env *env_list)
 	len_env = count_env(env_list);
 	env_copy = ft_collect_mem(sizeof(t_env *), len_env + 1);
 	if (!env_copy)
-		perror("malloc");
+		return (NULL);
 	i = 0;
 	while (env_list)
 	{
@@ -95,23 +95,27 @@ void	addback_env(t_env **head, t_env *new_node)
 void	init_env(t_command *cmd, char **envp)
 {
 	int		i;
-	char	**tmp;
+	char	*tmp;
+	char	*key;
+	int		len;
 	t_env	*new_node;
 
 	i = 0;
 	cmd->env_list = NULL;
 	while (envp[i])
 	{
-		tmp = ft_split(envp[i++], '=');
-		if (tmp && tmp[0] && tmp[1])
+		tmp = ft_strchr(envp[i], '=');
+		len = ft_strlen(envp[i]) - ft_strlen(tmp);
+		key = ft_substr(envp[i++], 0, len);
+		if (key && key[0] && tmp)
 		{
 			new_node = ft_collect_mem(1, sizeof(t_env));
-			new_node->key = ft_strdup(tmp[0]);
-			new_node->value = ft_strdup(tmp[1]);
+			new_node->key = ft_strdup(key);
+			new_node->value = ft_strdup(&tmp[1]);
 			new_node->prev = NULL;
 			new_node->next = NULL;
 			addback_env(&cmd->env_list, new_node);
 		}
-		ft_free_matrix(tmp);
+		untrack_pointer(key);
 	}
 }

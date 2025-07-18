@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 19:32:50 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/12 16:33:03 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:31:19 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*get_command(t_command *cmd, char *command)
 	return (full_path);
 }
 
-int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char *command)
+int	process_child(char **args, t_command *cmd, char *command)
 {
 	struct stat	file;
 	char		**environ;
@@ -75,42 +75,39 @@ int	process_child(char **args, int input_fd, int output_fd, t_command *cmd, char
 	environ = environ_list(cmd->env_list, count_env(cmd->env_list));
 	if (!environ)
 	{
-		perror("malloc");
+		perror("minishell");
 		exit (1);
 	}
 	if (stat(command, &file) == 0)
 	{
-		close_fd(input_fd, output_fd);
 		execve(command, args, environ);
 		perror("exceve");
 		ft_free_matrix(environ);
 		exit(1);
 	}
-	ft_printf_fd(STDERR_FILENO, "minishell: %s: could not execute command\n", command);
+	ft_printf_fd(STDERR_FILENO, \
+		"minishell: %s: could not execute command\n", command);
 	exit(-1);
 }
 
-int	process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid)
+int	process_parent(t_command *cmd, pid_t pid)
 {
 	int	sig;
-	if (input_fd != STDIN_FILENO)
-		close(input_fd);
-	if (output_fd != STDOUT_FILENO)
-		close(output_fd);
+
 	waitpid(pid, &cmd->status, 0);
 	if (WIFEXITED(cmd->status))
 		cmd->status = WEXITSTATUS(cmd->status);
 	else if (WIFSIGNALED(cmd->status))
 	{
 		sig = WTERMSIG(cmd->status);
-		if (sig == SIGQUIT && __WCOREDUMP(cmd->status))
+		if (sig == SIGQUIT && __WCOREDUMP(cmd->status) && !cmd->in_pipe)
 			ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
 		cmd->status = 128 + sig;
 	}
 	return (cmd->status);
 }
 
-int	exec_path(char **args, int input_fd, int output_fd, t_command *cmd)
+int	exec_path(char **args, t_command *cmd)
 {
 	pid_t	pid;
 	char	*command;
@@ -131,10 +128,9 @@ int	exec_path(char **args, int input_fd, int output_fd, t_command *cmd)
 	if (pid < 0)
 		return (error_handler("Error: Failed to fork process\n"), 1);
 	if (pid == 0)
-		res = process_child(args, input_fd, output_fd, cmd, command);
+		res = process_child(args, cmd, command);
 	if (pid > 0)
-		res = process_parent(input_fd, output_fd, cmd, pid);
+		res = process_parent(cmd, pid);
 	untrack_pointer(command);
 	return (res);
 }
-

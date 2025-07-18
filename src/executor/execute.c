@@ -6,50 +6,42 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:12:13 by gyasuhir          #+#    #+#             */
-/*   Updated: 2025/07/13 15:28:30 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:48:41 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	pipe_child_left(t_node *node, int fd[2], int in, int out)
+void	pipe_child_left(t_node *node, int fd[2])
 {
-	int	status;
+	int			status;
+	t_command	*cmd;
 
+	cmd = get_cmd_context(NULL);
+	cmd->in_pipe = 1;
 	close(fd[0]);
-	if (dup2(out, STDOUT_FILENO) == -1)
-		error_handler("Error: Failed to duplicate file descriptor");
-	status = execute_node(node, in, out);
-	close(out);
-	ft_clear_mem();
-	exit(status);
-}
-
-void	pipe_child_right(t_node *node, int fd[2], int in, int out)
-{
-	int	status;
-
+	if (dup2(fd[1], STDOUT_FILENO) == -1)
+		error_handler(FORK);
 	close(fd[1]);
-	if (dup2(in, STDIN_FILENO) == -1)
-		error_handler("Error: Failed to duplicate file descriptor");
-	status = execute_node(node, in, out);
-	close(in);
+	status = execute_node(node);
 	ft_clear_mem();
 	exit(status);
 }
 
-void	close_fd(int input_fd, int output_fd)
+void	pipe_child_right(t_node *node, int fd[2])
 {
-	if (input_fd != STDIN_FILENO)
-	{
-		dup2(input_fd, STDIN_FILENO);
-		close(input_fd);
-	}
-	if (output_fd != STDOUT_FILENO)
-	{
-		dup2(output_fd, STDOUT_FILENO);
-		close(output_fd);
-	}
+	int			status;
+	t_command	*cmd;
+
+	cmd = get_cmd_context(NULL);
+	cmd->in_pipe = 1;
+	close(fd[1]);
+	if (dup2(fd[0], STDIN_FILENO) == -1)
+		error_handler(FORK);
+	close(fd[0]);
+	status = execute_node(node);
+	ft_clear_mem();
+	exit(status);
 }
 
 int	open_redir_file(t_token_type type, char *filename)
@@ -63,12 +55,15 @@ int	open_redir_file(t_token_type type, char *filename)
 		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (type == REDIR_IN_TOKEN)
 		fd = open(filename, O_RDONLY);
-	else if (type == HEREDOC_TOKEN)
-		return (handle_heredoc(filename));
 	else
 		return (-1);
 	if (fd < 0)
-		print_cmd_error(filename, -2);
+	{
+		if (errno == ENOENT)
+			print_cmd_error(filename, -2);
+		else
+			print_cmd_error(filename, -1);
+	}
 	return (fd);
 }
 

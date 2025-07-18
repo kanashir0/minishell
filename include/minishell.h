@@ -6,7 +6,7 @@
 /*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 14:27:43 by cbrito-s          #+#    #+#             */
-/*   Updated: 2025/07/13 15:33:41 by cbrito-s         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:29:51 by cbrito-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@
 # define SUCCESS 0
 # define FAILURE 1
 # define SYNTAX_ERROR 2
+
+# define DUP2 "Error: Failed to duplicate file descriptor"
+# define FORK "Error: Failed to fork process"
+# define MALLOC "Error: When using malloc"
+# define WARNING "warning: here-document delimited by end-of-file"
 
 # define MINISHELL "\001\033[01;38;5;33m\002"
 # define COMMAND "\001\033[0m\002"
@@ -81,12 +86,15 @@ typedef struct s_command
 	char	**args;
 	int		status;
 	int		executing;
+	int		in_pipe;
 	t_env	*env_list;
 	t_token	**tokens;
+	char	**heredoc_files;
 }			t_command;
 
 // Input
 void		read_input(t_command *cmd);
+void		process_input(t_command *cmd);
 int			is_empty_input(char *input);
 int			ft_isspace(int c);
 int			check_input(char *input, int *len);
@@ -120,21 +128,24 @@ char		**environ_list(t_env *env_list, int count);
 
 // Executor
 int			open_redir_file(t_token_type type, char *filename);
-int			execute_node(t_node *node, int input_fd, int output_fd);
+int			execute_node(t_node *node);
 int			execute_ast(t_node *root);
-int			exec_path(char **args, int input_fd, int output_fd, t_command *cmd);
-void		close_fd(int input_fd, int output_fd);
-int			handle_heredoc(const char *delimiter);
-void		pipe_child_left(t_node *node, int fd[2], int in, int out);
-void		pipe_child_right(t_node *node, int fd[2], int in, int out);
-int			process_parent(int input_fd, int output_fd, t_command *cmd, pid_t pid);
+int			exec_path(char **args, t_command *cmd);
+char		*handle_heredoc(const char *delimiter);
+void		pipe_child_left(t_node *node, int fd[2]);
+void		pipe_child_right(t_node *node, int fd[2]);
+int			process_parent(t_command *cmd, pid_t pid);
 
 // Expansion
+void		single_quoted(char *input, int *i, char **res);
 void		append_and_free(char **res, char *tmp);
 char		*extract_env_value(char *input, int *i, t_env *environ);
 char		*handle_dollar_special_cases(char c, int *i, int status);
 char		*handle_dollar(char *input, int *i, t_env *ev, int status);
-void 		expand_tokens(t_token **tokens, t_env *env, int status);
+void		expand_tokens(t_token **tokens, int status);
+char		*strip_quotes(char *delim);
+int			should_expand(char *delim);
+void		unquoted_heredoc(char **line);
 
 // Utils
 t_command	*get_cmd_context(t_command *cmd);
@@ -143,22 +154,27 @@ void		init_env(t_command *cmd, char **envp);
 void		init_under(t_command *cmd, char *prog);
 void		error_handler(char *msg);
 int			print_cmd_error(char *command, int res);
-void 		update_under(t_command *cmd, char *new_value);
+void		update_under(t_command *cmd, char *new_value);
 
 // Tokenizer
 t_token		**tokenizer(char *input);
 int			match_token(t_token **tokens, t_token_type t_type);
 t_token		*consume_token(t_token **tokens);
 void		free_token_list(t_token **tokens);
+void		remove_empty_token(t_token **tokens, t_token *curr, t_token *prev);
 
 // Parser
 t_node		*generate_ast(t_token **tokens);
 t_node		*new_node(t_node_type n_type, t_node *left, t_node *right);
 void		free_ast(t_node *node);
+int			preprocess_heredocs(t_node *node);
 
 // Helpers
 char		*concatenate(char *s1, char *s2, char *s3);
 void		syntax_error_unclosed_quote(char quote);
+void		syntax_error_near_token(char *token);
 int			waitpid_status(int pid[2]);
+void		cleanup_heredocs(t_command *cmd);
+void		add_heredoc_file(t_command *cmd, char *filename);
 
 #endif
