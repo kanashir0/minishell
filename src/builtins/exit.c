@@ -1,0 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cbrito-s <cbrito-s>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/28 14:54:14 by cbrito-s          #+#    #+#             */
+/*   Updated: 2025/07/17 14:59:30 by cbrito-s         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/minishell.h"
+
+static int	is_numeric(const char *str)
+{
+	if (!str)
+		return (0);
+	if (*str == '+' || *str == '-')
+		str++;
+	while (*str)
+	{
+		if (!ft_isdigit(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+int	builtin_exit(char **args, t_command *cmd)
+{
+	long	status_code;
+	int		exit_status;
+
+	ft_printf_fd(STDOUT_FILENO, "%s\n", args[0]);
+	if (args[1] == NULL)
+	{
+		exit_status = cmd->status;
+		ft_clear_mem();
+		exit(exit_status);
+	}
+	if (!is_numeric(args[1]))
+	{
+		ft_printf_fd(STDERR_FILENO, "%s: %s: numeric argument required\n", \
+			args[0], args[1]);
+		ft_clear_mem();
+		exit(2);
+	}
+	if (args[2])
+	{
+		ft_printf_fd(STDERR_FILENO, "%s: too many arguments\n", args[0]);
+		return (1);
+	}
+	status_code = ft_atol(args[1]);
+	ft_clear_mem();
+	exit(status_code);
+}

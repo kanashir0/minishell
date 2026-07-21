@@ -1,0 +1,67 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gyasuhir <gyasuhir@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/24 12:05:12 by gyasuhir          #+#    #+#             */
+/*   Updated: 2025/07/17 22:27:18 by gyasuhir         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/minishell.h"
+
+void	read_input(t_command *cmd)
+{
+	int	exit_status;
+
+	cmd->input = readline(MINISHELL "minishell$ " COMMAND);
+	if (!cmd->input)
+	{
+		exit_status = cmd->status;
+		ft_printf_fd(STDOUT_FILENO, "exit\n");
+		ft_clear_mem();
+		exit(exit_status);
+	}
+	if (cmd->input && !is_empty_input(cmd->input))
+		add_history(cmd->input);
+	return ;
+}
+
+int	ft_isspace(int c)
+{
+	if (c == ' ' || (c >= 9 && c <= 13))
+		return (1);
+	return (0);
+}
+
+int	is_empty_input(char *input)
+{
+	while (*input)
+	{
+		if (!ft_isspace(*input))
+			return (0);
+		input++;
+	}
+	return (1);
+}
+
+int	check_input(char *input, int *len)
+{
+	char	quote;
+	int		start;
+
+	quote = input[*len];
+	start = *len;
+	(*len)++;
+	while (input[*len] && input[*len] != quote)
+		(*len)++;
+	if (input[*len] == quote)
+	{
+		(*len)++;
+		return (*len - start);
+	}
+	syntax_error_unclosed_quote(quote);
+	return (-1);
+}

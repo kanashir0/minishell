@@ -1,0 +1,9 @@
+.vscode/
+objs/
+*.o
+*.a
+minishell
+minishell_test
+minishell_tester
+out.log
+basic_interactive_test.sh
